@@ -5,9 +5,8 @@
  */
 
 import { styled } from '@gluestack-style/react'
-import { View } from '@gluestack-ui/themed'
+import { HStack, VStack } from '@gluestack-ui/themed'
 import { Link, Slot } from 'expo-router'
-import { StyleSheet } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 export default function TabsLayout() {
@@ -15,39 +14,24 @@ export default function TabsLayout() {
 
   return (
     <>
-      <View
-        style={{
-          height: '100%',
-          backgroundColor: 'red',
-          paddingTop: safeAreaInsets.top,
-          paddingBottom: safeAreaInsets.bottom,
-        }}
-      >
+      <VStack pb={safeAreaInsets.bottom} bg='$red400' h='100%'>
         <Slot />
 
-        <View style={styles.bottomNavs}>
+        <HStack justifyContent='space-around'>
           <LinkText replace href='/'>
             Home
           </LinkText>
 
-          <LinkText href='/create'>new</LinkText>
+          <LinkText href='/post/create'>new</LinkText>
 
           <LinkText replace href='/mine'>
             Mine
           </LinkText>
-        </View>
-      </View>
+        </HStack>
+      </VStack>
     </>
   )
 }
-
-const styles = StyleSheet.create({
-  bottomNavs: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-  },
-})
 
 const LinkText = styled(Link, {
   color: '$blue400',

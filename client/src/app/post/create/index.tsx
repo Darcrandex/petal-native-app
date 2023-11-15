@@ -5,7 +5,20 @@
  */
 
 import { postService } from '@/services/post'
-import { Button, Image, Text, Toast, ToastTitle, VStack, View, useToast } from '@gluestack-ui/themed'
+import {
+  AddIcon,
+  Button,
+  ButtonIcon,
+  ButtonText,
+  HStack,
+  Image,
+  Text,
+  Toast,
+  ToastTitle,
+  VStack,
+  View,
+  useToast,
+} from '@gluestack-ui/themed'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import * as ImagePicker from 'expo-image-picker'
 import { router } from 'expo-router'
@@ -77,8 +90,16 @@ export default function PostCreate() {
     <>
       <View style={{ paddingTop: safeAreaInsets.top, paddingBottom: safeAreaInsets.bottom }}>
         <Button onPress={() => router.back()}>
-          <Text>back</Text>
+          <ButtonText>back home</ButtonText>
         </Button>
+
+        <HStack space='md' reversed={false}>
+          <Button size='md' variant='solid' action='primary' isDisabled={false} isFocusVisible={false}>
+            <ButtonText>Add </ButtonText>
+            <ButtonIcon as={AddIcon} />
+          </Button>
+        </HStack>
+
         <Text>New One</Text>
 
         <Button onPress={pickImage}>

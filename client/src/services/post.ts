@@ -1,17 +1,10 @@
-import { req } from '@/utils/req'
-
-export type Post = {
-  id: number
-  imageUrl: string
-  imageWidth: number
-  imageHeight: number
-  content?: string
-}
+import { PostModel } from '@/types/post.model'
+import { http } from '@/utils/http'
 
 export const postService = {
-  create: async (post: Omit<Post, 'id'>) => req.post<string>('/post', post),
+  create: async (post: Omit<PostModel, 'id'>) => http.post<string>('/post', post),
 
-  pages: async () => req.get<Post[]>('/post'),
+  pages: async () => http.get<PostModel[]>('/post'),
 
-  getById: async (id: string) => req.get<Post>(`/post/${id}`),
+  getById: async (id: string) => http.get<PostModel>(`/post/${id}`),
 }
