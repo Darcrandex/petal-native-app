@@ -9,10 +9,11 @@ import { postService } from '@/services/post'
 import { PostModel } from '@/types/post.model'
 import { HStack, Pressable, ScrollView, Text, VStack } from '@gluestack-ui/themed'
 import { useQuery } from '@tanstack/react-query'
+import { useDebounceFn } from 'ahooks'
 import { router } from 'expo-router'
 import { isNil } from 'ramda'
-import { useEffect, useState } from 'react'
-import { RefreshControl } from 'react-native'
+import { useCallback, useEffect, useState } from 'react'
+import { NativeScrollEvent, NativeSyntheticEvent, RefreshControl } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 type Column = {
@@ -61,6 +62,26 @@ export default function Follow() {
     router.push(`/post/${id}`)
   }
 
+  // load more
+  const { run: onLoadMore } = useDebounceFn(
+    () => {
+      console.log('load more')
+    },
+    { wait: 1000 }
+  )
+
+  const onScroll = useCallback(
+    (e: NativeSyntheticEvent<NativeScrollEvent>) => {
+      const { layoutMeasurement, contentOffset, contentSize } = e.nativeEvent
+      const paddingToBottom = 20
+      const isCloseToBottom =
+        contentOffset.y > 0 && layoutMeasurement.height + contentOffset.y >= contentSize.height - paddingToBottom
+
+      if (isCloseToBottom) onLoadMore()
+    },
+    [onLoadMore]
+  )
+
   return (
     <>
       <VStack pt={safeAreaInsets.top} flex={1} bg='$blue400'>
@@ -72,6 +93,8 @@ export default function Follow() {
           bg='$green300'
           showsVerticalScrollIndicator={false}
           refreshControl={<RefreshControl refreshing={isLoading} onRefresh={refetch} />}
+          scrollEventThrottle={16}
+          onScroll={onScroll}
         >
           <HStack margin={6}>
             {columns.map((g) => (
