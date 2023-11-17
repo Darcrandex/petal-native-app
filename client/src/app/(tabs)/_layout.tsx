@@ -4,13 +4,15 @@
  * @author darcrand
  */
 
+import { useLoginModal } from '@/components/LoginModal/context'
 import { styled } from '@gluestack-style/react'
-import { HStack, VStack } from '@gluestack-ui/themed'
+import { Button, ButtonText, HStack, VStack } from '@gluestack-ui/themed'
 import { Link, Slot } from 'expo-router'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 export default function TabsLayout() {
   const safeAreaInsets = useSafeAreaInsets()
+  const { onOpen } = useLoginModal()
 
   return (
     <>
@@ -27,6 +29,10 @@ export default function TabsLayout() {
           <LinkText replace href='/mine'>
             Mine
           </LinkText>
+
+          <Button onPress={() => onOpen()}>
+            <ButtonText>modal</ButtonText>
+          </Button>
         </HStack>
       </VStack>
     </>

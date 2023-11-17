@@ -22,6 +22,14 @@ type Column = {
   totalHeight: number
 }
 
+const tabs = Array(20)
+  .fill(0)
+  .map((_, i) => ({
+    id: ~~(Math.random() * 1000),
+    label: `Tab ${i + 1}`,
+    key: `tab-${i + 1}`,
+  }))
+
 export default function Follow() {
   const safeAreaInsets = useSafeAreaInsets()
   const [columns, setColumns] = useState<Column[]>([])
@@ -88,6 +96,14 @@ export default function Follow() {
         <HStack justifyContent='center'>
           <Text>Follow</Text>
         </HStack>
+
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} scrollEventThrottle={16}>
+          {tabs.map((v) => (
+            <Pressable key={v.id} onPress={() => console.log(v.id)}>
+              <Text>{v.label}</Text>
+            </Pressable>
+          ))}
+        </ScrollView>
 
         <ScrollView
           bg='$green300'
