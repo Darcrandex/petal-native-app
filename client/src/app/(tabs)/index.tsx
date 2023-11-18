@@ -66,7 +66,7 @@ export default function Follow() {
     })
   }, [data])
 
-  const onNavigate = (id: number) => {
+  const onNavigate = (id: string) => {
     router.push(`/post/${id}`)
   }
 
@@ -99,7 +99,7 @@ export default function Follow() {
 
         <ScrollView horizontal showsHorizontalScrollIndicator={false} scrollEventThrottle={16}>
           {tabs.map((v) => (
-            <Pressable key={v.id} onPress={() => console.log(v.id)}>
+            <Pressable key={v.id} padding='$2' onPress={() => console.log(v.id)}>
               <Text>{v.label}</Text>
             </Pressable>
           ))}

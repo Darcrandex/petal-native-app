@@ -1,5 +1,6 @@
 import { PostModel } from '@/types/post.model'
 import { http } from '@/utils/http'
+import { uuid } from '@/utils/uuid'
 
 export const postService = {
   create: async (post: Omit<PostModel, 'id'>) => http.post<string>('/post', post),
@@ -8,7 +9,7 @@ export const postService = {
   pages: async () =>
     Array.from({ length: 20 }).map(() => {
       return {
-        id: ~~(Math.random() * 1000),
+        id: uuid(),
         imageUrl: 'https://picsum.photos?random=dybvbubpvmg',
         imageWidth: 200 + ~~(Math.random() * 200),
         imageHeight: 200 + ~~(Math.random() * 300),

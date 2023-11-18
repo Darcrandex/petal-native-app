@@ -1,5 +1,5 @@
 export type PostModel = {
-  id: number
+  id: string
   imageUrl: string
   imageWidth: number
   imageHeight: number
