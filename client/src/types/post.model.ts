@@ -4,4 +4,5 @@ export type PostModel = {
   imageWidth: number
   imageHeight: number
   content?: string
+  status?: 'saved' | 'published' | 'rejected'
 }

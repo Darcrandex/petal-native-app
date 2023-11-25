@@ -1,12 +1,13 @@
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import axios from 'axios'
 
 export const http = axios.create({
-  baseURL: process.env.EXPO_API_URL,
+  baseURL: process.env.EXPO_PUBLIC_API_URL,
   timeout: 10000,
 })
 
-http.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token')
+http.interceptors.request.use(async (config) => {
+  const token = await AsyncStorage.getItem('token')
   if (token) {
     config.headers.Authorization = `Bearer ${token}`
   }
@@ -14,4 +15,12 @@ http.interceptors.request.use((config) => {
   return config
 })
 
-http.interceptors.response.use((response) => response)
+http.interceptors.response.use((response) => {
+  console.log('response', response.data)
+
+  if (!response || response.status >= 400) {
+    return Promise.reject(response)
+  }
+
+  return response
+})

@@ -30,28 +30,28 @@ export default function Mine() {
 
         <HStack space='md' margin='$4'>
           <Pressable bg='$green400' flex={1} borderRadius={4}>
-            <VStack space='md' alignItems='center'>
+            <VStack alignItems='center' paddingVertical='$2'>
               <Text>25</Text>
               <Text>画板</Text>
             </VStack>
           </Pressable>
 
           <Pressable bg='$green400' flex={1}>
-            <VStack space='md'>
+            <VStack>
               <Text>83</Text>
               <Text>采集</Text>
             </VStack>
           </Pressable>
 
           <Pressable bg='$green400' flex={1}>
-            <VStack space='md'>
+            <VStack>
               <Text>23</Text>
               <Text>喜欢</Text>
             </VStack>
           </Pressable>
 
           <Pressable bg='$green400' flex={1}>
-            <VStack space='md'>
+            <VStack>
               <Text>12</Text>
               <Text>关注</Text>
             </VStack>

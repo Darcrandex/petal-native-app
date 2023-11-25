@@ -4,12 +4,13 @@
  * @author darcrand
  */
 
+import NavButton from '@/components/NavButton'
 import { useLoginModal } from '@/stores/login-modal'
 import { useUserState } from '@/stores/user'
 import { CalendarDaysIcon, HStack, Icon, Pressable, Text, VStack } from '@gluestack-ui/themed'
-import { Slot, usePathname, useRouter } from 'expo-router'
+import { Slot, useRouter } from 'expo-router'
 import { isNotNil } from 'ramda'
-import { ReactNode } from 'react'
+import { useWindowDimensions } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 export default function TabsLayout() {
@@ -17,13 +18,14 @@ export default function TabsLayout() {
   const { user } = useUserState()
   const { onOpen } = useLoginModal()
   const router = useRouter()
+  const { height } = useWindowDimensions()
 
   return (
     <>
-      <VStack pb={safeAreaInsets.bottom} bg='$red400' h='100%'>
+      <VStack pb={safeAreaInsets.bottom} bg='$red400' h={height}>
         <Slot />
 
-        <HStack justifyContent='space-around' alignItems='center'>
+        <HStack justifyContent='space-around' alignItems='center' bg='$pink400'>
           <NavButton label='关注' icon={<Icon as={CalendarDaysIcon} size='md' />} to='/' />
 
           <Pressable
@@ -37,19 +39,5 @@ export default function TabsLayout() {
         </HStack>
       </VStack>
     </>
-  )
-}
-
-function NavButton(props: { label: string; icon?: ReactNode; to: string; replace?: boolean }) {
-  const pathname = usePathname()
-  const router = useRouter()
-
-  return (
-    <Pressable onPress={() => (props.replace ? router.replace(props.to) : router.push(props.to))}>
-      <VStack margin='$4' space='xs' alignItems='center'>
-        {props.icon}
-        <Text fontWeight={pathname === props.to ? 'bold' : 'normal'}>{props.label}</Text>
-      </VStack>
-    </Pressable>
   )
 }

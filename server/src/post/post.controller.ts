@@ -36,13 +36,13 @@ export class PostController {
   async findOne(@Param() parmas: { id: string }) {
     return await this.db.post.findUnique({
       where: {
-        id: Number.parseInt(parmas.id),
+        id: parmas.id,
       },
     })
   }
 
   @Delete(':id')
-  async remove(@Query() parmas: { id: number }) {
+  async remove(@Query() parmas: { id: string }) {
     return await this.db.post.delete({
       where: {
         id: parmas.id,

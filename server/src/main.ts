@@ -12,7 +12,7 @@ async function bootstrap() {
 
   await app.listen(port)
 
-  console.log('nestjs server start\n')
+  console.log('nestjs server start at:\n')
   const interfaces = networkInterfaces()
   Object.values(interfaces).forEach((value) => {
     value.forEach((item) => {

@@ -6,32 +6,43 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "mongodb"
   url      = env("DATABASE_URL")
 }
 
 // tables
 
 model User {
-  id       Int       @id @default(autoincrement())
-  email    String    @unique
+  id       String    @id @default(auto()) @map("_id") @db.ObjectId
+  username String    @unique
   password String
-  role     String
-  name     String?
+  role     Role      @default(User)
+  nickname String?
   posts    Post[]
   createAt DateTime?
   updateAt DateTime?
 }
 
 model Post {
-  id          Int       @id @default(autoincrement())
+  id          String      @id @default(auto()) @map("_id") @db.ObjectId
   imageUrl    String
   imageWidth  Int
   imageHeight Int
   content     String?
-  published   Boolean?  @default(false)
-  author      User?     @relation(fields: [authorId], references: [id])
-  authorId    Int?
+  status      PostStatus?
+  userId      String      @db.ObjectId
+  user        User        @relation(fields: [userId], references: [id])
   createAt    DateTime?
   updateAt    DateTime?
+}
+
+enum Role {
+  Admin
+  User
+}
+
+enum PostStatus {
+  Saved
+  Published
+  Rejected
 }

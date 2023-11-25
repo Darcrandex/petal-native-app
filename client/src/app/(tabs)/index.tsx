@@ -7,7 +7,8 @@
 import PostItem from '@/components/PostItem'
 import { postService } from '@/services/post'
 import { PostModel } from '@/types/post.model'
-import { HStack, Pressable, ScrollView, Text, VStack } from '@gluestack-ui/themed'
+import { uuid } from '@/utils/uuid'
+import { Box, HStack, Pressable, ScrollView, Text, VStack } from '@gluestack-ui/themed'
 import { useQuery } from '@tanstack/react-query'
 import { useDebounceFn } from 'ahooks'
 import { router } from 'expo-router'
@@ -25,7 +26,7 @@ type Column = {
 const tabs = Array(20)
   .fill(0)
   .map((_, i) => ({
-    id: ~~(Math.random() * 1000),
+    id: uuid(),
     label: `Tab ${i + 1}`,
     key: `tab-${i + 1}`,
   }))
@@ -34,7 +35,7 @@ export default function Follow() {
   const safeAreaInsets = useSafeAreaInsets()
   const [columns, setColumns] = useState<Column[]>([])
 
-  const { data, refetch, isLoading } = useQuery({
+  const { data, refetch, isLoading, isError } = useQuery({
     queryKey: ['post', 'page'],
     queryFn: async () => postService.pages(),
   })
@@ -47,7 +48,7 @@ export default function Follow() {
         { id: `col-2`, posts: [], totalHeight: 0 },
       ]
 
-      data.forEach((v) => {
+      data?.data?.forEach((v) => {
         const minHeightColumn = newColumns.reduce<Column | null>(
           (acc, cur) => (!acc || cur.totalHeight < acc.totalHeight ? cur : acc),
           null
@@ -97,16 +98,19 @@ export default function Follow() {
           <Text>Follow</Text>
         </HStack>
 
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} scrollEventThrottle={16}>
-          {tabs.map((v) => (
-            <Pressable key={v.id} padding='$2' onPress={() => console.log(v.id)}>
-              <Text>{v.label}</Text>
-            </Pressable>
-          ))}
-        </ScrollView>
+        <Box>
+          <ScrollView bg='$violet300' horizontal showsHorizontalScrollIndicator={false} scrollEventThrottle={16}>
+            {tabs.map((v) => (
+              <Pressable key={v.id} height='auto' padding='$2' onPress={() => console.log(v.id)}>
+                <Text>{v.label}</Text>
+              </Pressable>
+            ))}
+          </ScrollView>
+        </Box>
 
         <ScrollView
           bg='$green300'
+          flex={1}
           showsVerticalScrollIndicator={false}
           refreshControl={<RefreshControl refreshing={isLoading} onRefresh={refetch} />}
           scrollEventThrottle={16}
@@ -115,7 +119,7 @@ export default function Follow() {
           <HStack margin={6}>
             {columns.map((g) => (
               <VStack key={g.id} width='$1/2'>
-                {g.posts.map((v, i) => (
+                {g.posts.map((v) => (
                   <Pressable key={v.id} onPress={() => onNavigate(v.id)}>
                     <PostItem data={v} />
                   </Pressable>

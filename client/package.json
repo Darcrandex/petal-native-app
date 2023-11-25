@@ -14,6 +14,7 @@
     "@gluestack-ui/config": "latest",
     "@gluestack-ui/themed": "latest",
     "@legendapp/motion": "latest",
+    "@react-native-async-storage/async-storage": "^1.19.8",
     "@tanstack/react-query": "^5.8.3",
     "ahooks": "^3.7.8",
     "axios": "^1.6.2",
