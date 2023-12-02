@@ -7,6 +7,7 @@ import { AuthService } from './auth.service'
 
 @Module({
   imports: [
+    // module 在注入时依赖其他的 module
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],

@@ -6,43 +6,67 @@ generator client {
 }
 
 datasource db {
-  provider = "mongodb"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
 // tables
 
 model User {
-  id       String    @id @default(auto()) @map("_id") @db.ObjectId
-  username String    @unique
-  password String
-  role     Role      @default(User)
-  nickname String?
-  posts    Post[]
-  createAt DateTime?
-  updateAt DateTime?
+  id        String     @id @default(uuid())
+  username  String     @unique
+  password  String
+  role      String?    @default("user")
+  nickname  String?
+  posts     Post[]
+  favorites Favorite[]
+  createAt  DateTime?
+  updateAt  DateTime?
 }
 
 model Post {
-  id          String      @id @default(auto()) @map("_id") @db.ObjectId
+  id          String              @id @default(uuid())
   imageUrl    String
   imageWidth  Int
   imageHeight Int
   content     String?
-  status      PostStatus?
-  userId      String      @db.ObjectId
-  user        User        @relation(fields: [userId], references: [id])
+  status      String?
+  userId      String
+  user        User                @relation(fields: [userId], references: [id])
+  categories  CategoriesOnPosts[]
+  favorites   PostsToFavorites[]
   createAt    DateTime?
   updateAt    DateTime?
 }
 
-enum Role {
-  Admin
-  User
+model Favorite {
+  id     String             @id @default(uuid())
+  name   String
+  userId String
+  user   User               @relation(fields: [userId], references: [id])
+  posts  PostsToFavorites[]
 }
 
-enum PostStatus {
-  Saved
-  Published
-  Rejected
+model Category {
+  id    String              @id @default(uuid())
+  name  String
+  posts CategoriesOnPosts[]
+}
+
+model CategoriesOnPosts {
+  post       Post     @relation(fields: [postId], references: [id])
+  postId     String 
+  category   Category @relation(fields: [categoryId], references: [id])
+  categoryId String 
+
+  @@id([postId, categoryId])
+}
+
+model PostsToFavorites {
+  postId     String 
+  post       Post     @relation(fields: [postId], references: [id])
+  favoriteId String
+  favorite   Favorite @relation(fields: [postId], references: [id])
+
+  @@id([postId, favoriteId])
 }

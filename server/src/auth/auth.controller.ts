@@ -37,7 +37,9 @@ export class AuthController {
       const isMatch = await bcrypt.compare(data.password, matchedUser.password)
 
       if (isMatch) {
-        const token = this.jwtService.sign(omit(['password'], matchedUser))
+        const token = await this.jwtService.signAsync(
+          omit(['password'], matchedUser),
+        )
         return token
       }
     }
