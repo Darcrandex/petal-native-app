@@ -10,16 +10,19 @@ import { Reflector } from '@nestjs/core'
 import { JwtService } from '@nestjs/jwt'
 import { Request } from 'express'
 
+// 用于配置路由是否需要先登录
 export const IS_PUBLIC_KEY = 'isPublic'
-export const Public = () => SetMetadata(IS_PUBLIC_KEY, true)
-export const Private = () => SetMetadata(IS_PUBLIC_KEY, false)
+export const PublicRoute = () => SetMetadata(IS_PUBLIC_KEY, true)
+export const PrivateRoute = () => SetMetadata(IS_PUBLIC_KEY, false)
+
+export type ReqWithUser = Request & { user: { id: string } }
 
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(
-    private readonly configService: ConfigService,
-    private readonly jwtService: JwtService,
     private reflector: Reflector,
+    private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -27,8 +30,8 @@ export class AuthGuard implements CanActivate {
       context.getHandler(),
       context.getClass(),
     ])
+
     if (isPublic) {
-      // 💡 See this condition
       return true
     }
 
@@ -39,9 +42,12 @@ export class AuthGuard implements CanActivate {
     }
 
     try {
-      const payload = await this.jwtService.verifyAsync(token, {
-        secret: this.configService.get('JWT_SECRECT'),
-      })
+      const payload = await this.jwtService.verifyAsync<ReqWithUser['user']>(
+        token,
+        {
+          secret: this.configService.get('JWT_SECRECT'),
+        },
+      )
 
       // 将解析的 token 信息挂载到 request.user 上
       request['user'] = payload

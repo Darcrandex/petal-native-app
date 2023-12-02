@@ -8,7 +8,6 @@ import { PostModule } from './post/post.module'
 
 @Module({
   imports: [ConfigModule.forRoot({ isGlobal: true }), PostModule, AuthModule],
-
   controllers: [AppController],
   providers: [AppService, DbService],
 })

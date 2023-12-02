@@ -7,4 +7,6 @@ export const userService = {
   registry: (data: Pick<UserModel, 'username' | 'password'>) => http.post<string>('/auth/registry', data),
 
   logout() {},
+
+  profile: () => http.get<UserModel>('/auth/profile'),
 }

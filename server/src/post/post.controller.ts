@@ -8,6 +8,7 @@ import {
   Query,
 } from '@nestjs/common'
 import { Prisma } from '@prisma/client'
+import { PublicRoute } from 'src/auth/auth.guard'
 import { DbService } from 'src/db/db.service'
 
 @Controller('post')
@@ -21,6 +22,7 @@ export class PostController {
     return id
   }
 
+  @PublicRoute()
   @Get()
   async findAll(@Query() parmas: { page?: number; pageSize?: number }) {
     const page = Math.max(1, parmas.page || 1)
@@ -32,6 +34,7 @@ export class PostController {
     })
   }
 
+  @PublicRoute()
   @Get(':id')
   async findOne(@Param() parmas: { id: string }) {
     return await this.db.post.findUnique({

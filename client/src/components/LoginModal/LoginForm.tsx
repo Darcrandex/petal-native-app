@@ -8,7 +8,7 @@ import { userService } from '@/services/user'
 import { useLoginModal } from '@/stores/login-modal'
 import { Button, ButtonText, HStack, Input, InputField, Pressable, Text, VStack } from '@gluestack-ui/themed'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 
 export type LoginFormProps = { setTabKey: (key: string) => void }
@@ -17,18 +17,17 @@ export default function LoginForm(props: LoginFormProps) {
   const { onClose } = useLoginModal()
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  const queryClient = useQueryClient()
 
   const { mutate: onSubmit } = useMutation({
     mutationFn: async () => {
       if (!username || !password) return
-
       return await userService.login({ username, password })
     },
 
     async onSuccess(res) {
-      console.log('res', res?.data)
-      const token = res?.data || ''
-      await AsyncStorage.setItem('token', token)
+      await AsyncStorage.setItem('token', res?.data || '')
+      queryClient.invalidateQueries({ queryKey: ['user', 'profile'] })
       onClose()
     },
   })

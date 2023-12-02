@@ -4,11 +4,18 @@
  * @author darcrand
  */
 
+import { userService } from '@/services/user'
 import { Avatar, Box, CalendarDaysIcon, HStack, Icon, Pressable, Text, VStack } from '@gluestack-ui/themed'
+import { useQuery } from '@tanstack/react-query'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 export default function Mine() {
   const safeAreaInsets = useSafeAreaInsets()
+  const { data } = useQuery({
+    queryKey: ['user', 'profile'],
+    queryFn: async () => userService.profile(),
+    retry: false,
+  })
 
   return (
     <>
@@ -23,7 +30,7 @@ export default function Mine() {
           <Avatar size='lg' />
 
           <Box>
-            <Text>name</Text>
+            <Text>{data?.data.username || 'username'}</Text>
             <Text>email</Text>
           </Box>
         </HStack>
