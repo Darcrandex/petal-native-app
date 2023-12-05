@@ -9,8 +9,7 @@ import {
 } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { Prisma } from '@prisma/client'
-import bcrypt from 'bcryptjs'
-
+import { compareSync, genSaltSync, hashSync } from 'bcryptjs'
 import { omit } from 'ramda'
 import { DbService } from 'src/db/db.service'
 import { PublicRoute, ReqWithUser } from './auth.guard'
@@ -25,9 +24,9 @@ export class AuthController {
   @PublicRoute()
   @Post('registry')
   async registry(@Body() data: Prisma.UserCreateInput) {
-    const saltOrRounds = 10
+    const salt = genSaltSync(10)
     const password = data.password
-    const hash = await bcrypt.hash(password, saltOrRounds)
+    const hash = hashSync(password, salt)
 
     const user = await this.db.user.create({
       data: { username: data.username, password: hash },
@@ -46,7 +45,7 @@ export class AuthController {
     })
 
     if (matchedUser) {
-      const isMatch = await bcrypt.compare(data.password, matchedUser.password)
+      const isMatch = compareSync(data.password, matchedUser.password)
 
       if (isMatch) {
         const token = await this.jwtService.signAsync(
