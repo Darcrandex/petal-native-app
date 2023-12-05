@@ -9,7 +9,8 @@ import {
 } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { Prisma } from '@prisma/client'
-import * as bcrypt from 'bcrypt'
+import bcrypt from 'bcryptjs'
+
 import { omit } from 'ramda'
 import { DbService } from 'src/db/db.service'
 import { PublicRoute, ReqWithUser } from './auth.guard'
