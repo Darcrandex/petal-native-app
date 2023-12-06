@@ -14,7 +14,7 @@ import { useDebounceFn } from 'ahooks'
 import { router } from 'expo-router'
 import { isNil } from 'ramda'
 import { useCallback, useEffect, useState } from 'react'
-import { NativeScrollEvent, NativeSyntheticEvent, RefreshControl } from 'react-native'
+import { Dimensions, NativeScrollEvent, NativeSyntheticEvent, RefreshControl } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 type Column = {
@@ -43,6 +43,10 @@ export default function Follow() {
   useEffect(() => {
     if (isNil(data)) return
     setColumns(() => {
+      const winSize = Dimensions.get('window')
+      // 所有图片的显示宽度
+      const viewWidth = 0.5 * winSize.width
+
       const newColumns = [
         { id: `col-1`, posts: [], totalHeight: 0 },
         { id: `col-2`, posts: [], totalHeight: 0 },
@@ -57,8 +61,10 @@ export default function Follow() {
         if (minHeightColumn) {
           const isExist = minHeightColumn.posts.some((p) => p.id === v.id)
           if (!isExist) {
+            // 等比缩放计算显示高度
+            const viewHeight = Math.floor((v.imageHeight / v.imageWidth) * viewWidth)
+            minHeightColumn.totalHeight += viewHeight
             minHeightColumn.posts.push(v)
-            minHeightColumn.totalHeight += v.imageHeight
           }
         }
       })
@@ -90,6 +96,10 @@ export default function Follow() {
     },
     [onLoadMore]
   )
+
+  useEffect(() => {
+    console.log('columns', JSON.stringify(columns, null, 2))
+  }, [columns])
 
   return (
     <>

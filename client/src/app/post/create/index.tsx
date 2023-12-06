@@ -37,7 +37,7 @@ export default function PostCreate() {
     mutationFn: async () => {
       if (!imageAsset) return
 
-      if (imageAsset.fileSize && imageAsset.fileSize > 1024 * 1024 * 5) {
+      if (imageAsset.fileSize && imageAsset.fileSize > 1024 * 1024 * 10) {
         toast.show({
           placement: 'top',
           render: ({ id }) => (
@@ -51,10 +51,9 @@ export default function PostCreate() {
         return
       }
 
-      const res = await mediaService.upload(imageAsset)
-      console.log('img upload', res)
+      await mediaService.upload(imageAsset)
 
-      await postService.create({
+      const res = await postService.create({
         imageUrl: imageAsset.uri,
         imageWidth: imageAsset.width,
         imageHeight: imageAsset.height,
@@ -115,6 +114,7 @@ export default function PostCreate() {
         <View margin='$4'>
           <Text>{imageAsset?.width}</Text>
           <Text>{imageAsset?.height}</Text>
+          <Text>{imageAsset?.fileSize}</Text>
         </View>
 
         <Button disabled={isNil(imageAsset)} onPress={() => onSubmit()}>

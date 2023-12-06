@@ -7,8 +7,8 @@
 import { PostModel } from '@/types/post.model'
 import { Image, Text, View } from '@gluestack-ui/themed'
 import { useMemo } from 'react'
-
 import { Dimensions } from 'react-native'
+
 export type PostItemProps = { data: PostModel }
 
 export default function PostItem(props: PostItemProps) {
@@ -25,7 +25,8 @@ export default function PostItem(props: PostItemProps) {
         <Image
           width={viewSize.width}
           height={viewSize.height}
-          source={{ uri: props.data.imageUrl }}
+          // source={{ uri: props.data.imageUrl }}
+          source={{ uri: process.env.EXPO_PUBLIC_API_URL + '/public/uploads/2023-12-07/123.jpg' }}
           alt=''
           role='img'
           bgColor='$purple500'

@@ -6,7 +6,7 @@ import { AuthModule } from './auth/auth.module'
 import { CateModule } from './cate/cate.module'
 import { DbService } from './db/db.service'
 import { PostModule } from './post/post.module'
-import { MediaModule } from './media/media.module';
+import { MediaModule } from './media/media.module'
 
 @Module({
   imports: [

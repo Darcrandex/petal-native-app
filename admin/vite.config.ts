@@ -12,13 +12,6 @@ export default defineConfig(({ mode }) => {
     server: {
       host: true,
       port: parseInt(env.PORT || '3000'),
-      proxy: {
-        '/api': {
-          target: env.VITE_API_URI,
-          changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/api/, ''),
-        },
-      },
     },
   }
 })

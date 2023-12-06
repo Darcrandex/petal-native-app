@@ -16,7 +16,7 @@ http.interceptors.request.use(async (config) => {
 })
 
 http.interceptors.response.use((response) => {
-  console.log('response', response.data)
+  // console.log('response', response.data)
 
   if (!response || response.status >= 400) {
     return Promise.reject(response)
