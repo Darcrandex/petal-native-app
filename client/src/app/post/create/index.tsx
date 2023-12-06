@@ -4,6 +4,7 @@
  * @author darcrand
  */
 
+import { mediaService } from '@/services/common'
 import { postService } from '@/services/post'
 import {
   AddIcon,
@@ -49,6 +50,9 @@ export default function PostCreate() {
         })
         return
       }
+
+      const res = await mediaService.upload(imageAsset)
+      console.log('img upload', res)
 
       await postService.create({
         imageUrl: imageAsset.uri,
