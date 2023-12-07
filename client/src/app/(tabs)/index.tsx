@@ -97,10 +97,6 @@ export default function Follow() {
     [onLoadMore]
   )
 
-  useEffect(() => {
-    console.log('columns', JSON.stringify(columns, null, 2))
-  }, [columns])
-
   return (
     <>
       <VStack pt={safeAreaInsets.top} flex={1} bg='$blue400'>

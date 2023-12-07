@@ -51,10 +51,9 @@ export default function PostCreate() {
         return
       }
 
-      await mediaService.upload(imageAsset)
-
-      const res = await postService.create({
-        imageUrl: imageAsset.uri,
+      const res = await mediaService.upload(imageAsset)
+      await postService.create({
+        imageUrl: res.data,
         imageWidth: imageAsset.width,
         imageHeight: imageAsset.height,
       })

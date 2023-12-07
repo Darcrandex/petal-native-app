@@ -29,5 +29,7 @@ import { MediaController } from './media.controller'
   ],
 
   controllers: [MediaController],
+
+  providers: [ConfigService],
 })
 export class MediaModule {}

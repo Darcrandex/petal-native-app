@@ -4,8 +4,10 @@
  * @author darcrand
  */
 
+import { mediaService } from '@/services/common'
 import { PostModel } from '@/types/post.model'
 import { Image, Text, View } from '@gluestack-ui/themed'
+import { useQuery } from '@tanstack/react-query'
 import { useMemo } from 'react'
 import { Dimensions } from 'react-native'
 
@@ -19,14 +21,22 @@ export default function PostItem(props: PostItemProps) {
     return { width, height }
   }, [props.data])
 
+  const { data: imageSource } = useQuery({
+    queryKey: ['post', 'item', 'image', props.data.imageUrl],
+    enabled: !!props.data.imageUrl,
+    queryFn: async () => {
+      const res = await mediaService.getAccessPath(props.data.imageUrl)
+      return { uri: res.data }
+    },
+  })
+
   return (
     <>
       <View margin={6} bgColor='$orange300'>
         <Image
           width={viewSize.width}
           height={viewSize.height}
-          // source={{ uri: props.data.imageUrl }}
-          source={{ uri: process.env.EXPO_PUBLIC_API_URL + '/public/uploads/2023-12-07/123.jpg' }}
+          source={imageSource || { uri: props.data.imageUrl }}
           alt=''
           role='img'
           bgColor='$purple500'
