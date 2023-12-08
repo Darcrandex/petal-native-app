@@ -22,7 +22,7 @@ http.interceptors.response.use(
       return Promise.reject(response)
     }
 
-    return response
+    return response.data
   },
   (err) => {
     if (err.response.data.statusCode === 401) {

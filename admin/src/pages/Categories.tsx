@@ -4,13 +4,20 @@
  * @author darcrand
  */
 
+import AddForm from '@/components/AddForm'
+import RemoveButton from '@/components/RemoveButton'
+import UpdateForm from '@/components/UpdateForm'
+import { useTableSearch } from '@/hooks/useTableSearch'
 import { cateService } from '@/services/cate'
-import { PageParams } from '@/types/common'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { Button, Form, Input, Modal, Table } from 'antd'
-import { useMemo, useState } from 'react'
+import { Space, Table } from 'antd'
+import { useMemo } from 'react'
 
 export default function Categories() {
+  const { tableProps, refetch } = useTableSearch({
+    queryKey: ['cate', 'pages'],
+    queryFn: cateService.pages,
+  })
+
   const columns = useMemo(
     () => [
       {
@@ -21,81 +28,35 @@ export default function Categories() {
       {
         title: '操作',
         key: 'ctl',
-        render: (_, record) => <RemoveButton id={record.id} />,
+        width: 200,
+        render: (_: any, record: any) => (
+          <Space>
+            <UpdateForm
+              fields={[{ name: 'name', label: '名称', type: 'input' }]}
+              recordId={record.id}
+              queryFn={cateService.one}
+              mutationFn={cateService.update}
+              onSuccess={refetch}
+            />
+            <RemoveButton recordId={record.id} service={cateService.remove} onSuccess={refetch} />
+          </Space>
+        ),
       },
     ],
-    []
+    [refetch]
   )
-
-  const [query, setQuery] = useState<PageParams>({ page: 1, pageSize: 10 })
-  const { data } = useQuery({
-    queryKey: ['categories', query],
-    queryFn: () => cateService.pages(query),
-  })
-
-  const [open, setOpen] = useState(false)
 
   return (
     <>
       <header className='m-4'>
-        <Button onClick={() => setOpen(true)}>Add</Button>
+        <AddForm
+          mutationFn={cateService.add}
+          fields={[{ name: 'name', label: '名称', type: 'input' }]}
+          onSuccess={refetch}
+        />
       </header>
 
-      <Table
-        className='m-4'
-        bordered
-        dataSource={data?.data.list}
-        columns={columns}
-        rowKey={(row) => row.id}
-        pagination={{
-          current: query.page,
-          pageSize: query.pageSize,
-          hideOnSinglePage: true,
-          showTotal: () => `共 ${data?.data.total || 0} 条`,
-          onChange(page, pageSize) {
-            setQuery({ ...query, page, pageSize })
-          },
-        }}
-      />
-
-      <Modal title='添加分类' open={open} onCancel={() => setOpen(false)} footer={null} destroyOnClose>
-        <AddForm onClose={() => setOpen(false)} />
-      </Modal>
+      <Table className='m-4' columns={columns} {...tableProps} />
     </>
   )
-}
-
-function AddForm(props: { onClose: () => void }) {
-  const queryClient = useQueryClient()
-  const { mutate } = useMutation({
-    mutationFn: cateService.add,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['categories'] })
-      props.onClose()
-    },
-  })
-
-  return (
-    <Form onFinish={mutate} layout='vertical'>
-      <Form.Item label='分类名称' name='name'>
-        <Input />
-      </Form.Item>
-
-      <Form.Item>
-        <Button htmlType='submit'>确定</Button>
-      </Form.Item>
-    </Form>
-  )
-}
-
-function RemoveButton(props: { id: string }) {
-  const queryClient = useQueryClient()
-  const { mutate } = useMutation({
-    mutationFn: cateService.remove,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['categories'] })
-    },
-  })
-
-  return <Button onClick={() => mutate(props.id)}>删除</Button>
 }

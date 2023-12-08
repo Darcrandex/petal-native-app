@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   Post,
+  Put,
   Query,
   Request,
 } from '@nestjs/common'
@@ -29,18 +30,6 @@ export class PostController {
   }
 
   @PublicRoute()
-  @Get()
-  async findAll(@Query() parmas: { page?: number; pageSize?: number }) {
-    const page = Math.max(1, parmas.page || 1)
-    const pageSize = Math.max(1, parmas.pageSize || 10)
-
-    return await this.db.post.findMany({
-      skip: (page - 1) * pageSize,
-      take: pageSize,
-    })
-  }
-
-  @PublicRoute()
   @Get(':id')
   async findOne(@Param() parmas: { id: string }) {
     return await this.db.post.findUnique({
@@ -50,12 +39,35 @@ export class PostController {
     })
   }
 
+  @Put(':id')
+  async update(@Param('id') id: string, @Body() data: Prisma.PostUpdateInput) {
+    return await this.db.post.update({
+      where: { id },
+      data,
+    })
+  }
+
   @Delete(':id')
-  async remove(@Query() parmas: { id: string }) {
+  async remove(@Param() parmas: { id: string }) {
     return await this.db.post.delete({
       where: {
         id: parmas.id,
       },
     })
+  }
+
+  @PublicRoute()
+  @Get()
+  async findAll(@Query() parmas: { page?: number; pageSize?: number }) {
+    const page = Math.max(1, parmas.page || 1)
+    const pageSize = Math.max(1, parmas.pageSize || 10)
+
+    const list = await this.db.post.findMany({
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+    })
+
+    const total = await this.db.post.count()
+    return { list, total, page, pageSize }
   }
 }

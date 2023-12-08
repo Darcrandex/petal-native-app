@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   Post,
+  Put,
   Query,
 } from '@nestjs/common'
 import { Prisma } from '@prisma/client'
@@ -31,6 +32,24 @@ export class CateController {
   async create(@Body() data: Prisma.CategoryCreateInput) {
     const { id } = await this.db.category.create({ data })
     return id
+  }
+
+  @Put(':id')
+  async update(
+    @Param('id') id: string,
+    @Body() data: Prisma.CategoryUpdateInput,
+  ) {
+    return await this.db.category.update({
+      where: { id },
+      data,
+    })
+  }
+
+  @Get(':id')
+  async findById(@Param('id') id: string) {
+    return await this.db.category.findUnique({
+      where: { id },
+    })
   }
 
   @Delete(':id')

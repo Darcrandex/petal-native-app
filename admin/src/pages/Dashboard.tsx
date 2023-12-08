@@ -11,7 +11,10 @@ export default function Dashboard() {
     <>
       <section className='flex h-screen'>
         <aside className='w-60 border-r'>
-          <NavLink to='cate'>Categories</NavLink>
+          <nav className='flex flex-col space-y-2'>
+            <NavLink to='cate'>Categories</NavLink>
+            <NavLink to='post'>Posts</NavLink>
+          </nav>
         </aside>
 
         <section className='flex-1 flex flex-col'>

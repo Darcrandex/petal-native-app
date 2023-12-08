@@ -11,6 +11,7 @@ import Root from './pages/Root'
 
 const Login = lazy(() => import('./pages/Login'))
 const Categories = lazy(() => import('./pages/Categories'))
+const Posts = lazy(() => import('./pages/Posts'))
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -18,6 +19,7 @@ const router = createBrowserRouter(
       <Route index element={<Navigate to='/dashboard' />} />
       <Route path='dashboard' element={<Dashboard />}>
         <Route path='cate' element={<Categories />} />
+        <Route path='post' element={<Posts />} />
       </Route>
 
       <Route path='login' element={<Login />} />
