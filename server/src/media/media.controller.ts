@@ -41,6 +41,7 @@ export class MediaController {
 
     const port = this.configService.get('NEST_SERVER_PROT') || 3000
 
-    return `http://${firstIp}:${port}/public/uploads/2023-12-07/123.jpg`
+    // return `http://${firstIp}:${port}/public/uploads/2023-12-07/123.jpg`
+    return `http://${firstIp}:${port}/${imageUrl}`
   }
 }
