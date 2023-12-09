@@ -10,7 +10,7 @@ export const mediaService = {
     // @ts-ignore
     formData.append('file', { name: file.fileName, type: file.type, uri: file.uri })
 
-    const imageUri = await http.post<string>('/media/upload', formData, {
+    const imageUri: string = await http.post('/media/upload', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
@@ -20,5 +20,5 @@ export const mediaService = {
   },
 
   // 通过图片的url获取图片的实时访问路径
-  getAccessPath: (imageUrl: string) => http.get<string>('/media/access-path', { params: { imageUrl } }),
+  getAccessPath: (imageUrl: string): Promise<string> => http.get('/media/access-path', { params: { imageUrl } }),
 }

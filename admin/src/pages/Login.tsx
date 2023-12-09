@@ -11,9 +11,9 @@ import { useNavigate } from 'react-router-dom'
 export default function Login() {
   const navigate = useNavigate()
   const onFinish = async (values: any) => {
-    const res = await userService.login(values)
-    if (res.data) {
-      window.localStorage.setItem('token', res.data)
+    const token = await userService.login(values)
+    if (token) {
+      window.localStorage.setItem('token', token)
       navigate('/')
     }
   }

@@ -4,22 +4,10 @@
  * @author darcrand
  */
 
+import FavoriteTools from '@/components/FavoriteTools'
 import { mediaService } from '@/services/common'
 import { postService } from '@/services/post'
-import {
-  AddIcon,
-  Button,
-  ButtonIcon,
-  ButtonText,
-  HStack,
-  Image,
-  Text,
-  Toast,
-  ToastTitle,
-  VStack,
-  View,
-  useToast,
-} from '@gluestack-ui/themed'
+import { Button, ButtonText, Image, Text, Toast, ToastTitle, VStack, View, useToast } from '@gluestack-ui/themed'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import * as ImagePicker from 'expo-image-picker'
 import { router } from 'expo-router'
@@ -32,6 +20,7 @@ export default function PostCreate() {
   const safeAreaInsets = useSafeAreaInsets()
   const [imageAsset, setImage] = useState<ImagePicker.ImagePickerAsset>()
   const queryClient = useQueryClient()
+  const [favoriteId, setFavoriteId] = useState('')
 
   const { mutate: onSubmit } = useMutation({
     mutationFn: async () => {
@@ -51,11 +40,12 @@ export default function PostCreate() {
         return
       }
 
-      const res = await mediaService.upload(imageAsset)
+      const imageUrl = await mediaService.upload(imageAsset)
       await postService.create({
-        imageUrl: res.data,
+        imageUrl,
         imageWidth: imageAsset.width,
         imageHeight: imageAsset.height,
+        favoriteId,
       })
     },
     onSuccess: () => {
@@ -95,15 +85,6 @@ export default function PostCreate() {
           <ButtonText>back home</ButtonText>
         </Button>
 
-        <HStack space='md' reversed={false}>
-          <Button size='md' variant='solid' action='primary' isDisabled={false} isFocusVisible={false}>
-            <ButtonText>Add </ButtonText>
-            <ButtonIcon as={AddIcon} />
-          </Button>
-        </HStack>
-
-        <Text>New One</Text>
-
         <Button onPress={pickImage}>
           <Text>select a image</Text>
         </Button>
@@ -115,6 +96,8 @@ export default function PostCreate() {
           <Text>{imageAsset?.height}</Text>
           <Text>{imageAsset?.fileSize}</Text>
         </View>
+
+        <FavoriteTools selected={favoriteId} onSelect={setFavoriteId} />
 
         <Button disabled={isNil(imageAsset)} onPress={() => onSubmit()}>
           <Text>Submit</Text>

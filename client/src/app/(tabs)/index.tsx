@@ -52,7 +52,7 @@ export default function Follow() {
         { id: `col-2`, posts: [], totalHeight: 0 },
       ]
 
-      data?.data?.list?.forEach((v) => {
+      data?.list?.forEach((v) => {
         const minHeightColumn = newColumns.reduce<Column | null>(
           (acc, cur) => (!acc || cur.totalHeight < acc.totalHeight ? cur : acc),
           null

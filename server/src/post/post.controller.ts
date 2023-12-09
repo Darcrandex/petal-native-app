@@ -20,10 +20,30 @@ export class PostController {
   @Post()
   async create(
     @Request() req: ReqWithUser,
-    @Body() data: Prisma.PostCreateInput,
+    @Body() data: Prisma.PostCreateInput & { favoriteId: string },
   ) {
     const { id } = await this.db.post.create({
-      data: { ...data, user: { connect: { id: req.user.id } } },
+      data: {
+        imageUrl: data.imageUrl,
+        imageWidth: data.imageWidth,
+        imageHeight: data.imageHeight,
+        content: data.content,
+        user: { connect: { id: req.user.id } },
+
+        // many to many 好像有点问题
+
+        // categories: {
+        //   create: [
+        //     {
+        //       category: {
+        //         create: {
+        //           name: 'New category',
+        //         },
+        //       },
+        //     },
+        //   ],
+        // },
+      },
     })
 
     return id

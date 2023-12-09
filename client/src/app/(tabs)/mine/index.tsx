@@ -30,7 +30,7 @@ export default function Mine() {
           <Avatar size='lg' />
 
           <Box>
-            <Text>{data?.data.username || 'username'}</Text>
+            <Text>{data?.username || 'username'}</Text>
             <Text>email</Text>
           </Box>
         </HStack>

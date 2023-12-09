@@ -26,7 +26,7 @@ export default function LoginForm(props: LoginFormProps) {
     },
 
     async onSuccess(res) {
-      await AsyncStorage.setItem('token', res?.data || '')
+      await AsyncStorage.setItem('token', res || '')
       queryClient.invalidateQueries({ queryKey: ['user', 'profile'] })
       onClose()
     },

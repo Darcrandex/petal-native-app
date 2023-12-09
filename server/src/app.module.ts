@@ -7,6 +7,7 @@ import { CateModule } from './cate/cate.module'
 import { DbService } from './db/db.service'
 import { PostModule } from './post/post.module'
 import { MediaModule } from './media/media.module'
+import { FavoriteModule } from './favorite/favorite.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { MediaModule } from './media/media.module'
     AuthModule,
     CateModule,
     MediaModule,
+    FavoriteModule,
   ],
   controllers: [AppController],
   providers: [AppService, DbService],

@@ -1,9 +1,9 @@
 import { http } from '@/utils/http'
 
 export const userService = {
-  login: (data: any) => http.post<string>('/auth/login', data),
+  login: (data: any): Promise<string> => http.post('/auth/login', data),
 
-  registry: (data: any) => http.post<string>('/auth/registry', data),
+  registry: (data: any) => http.post('/auth/registry', data),
 
   logout() {},
 

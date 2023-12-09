@@ -41,7 +41,8 @@ model Post {
 
 model Favorite {
   id     String             @id @default(uuid())
-  name   String
+  name   String             @unique
+  desc   String?
   userId String
   user   User               @relation(fields: [userId], references: [id])
   posts  PostsToFavorites[]
@@ -49,7 +50,7 @@ model Favorite {
 
 model Category {
   id    String              @id @default(uuid())
-  name  String
+  name  String              @unique
   posts CategoriesOnPosts[]
 }
 
