@@ -7,7 +7,18 @@
 import FavoriteTools from '@/components/FavoriteTools'
 import { mediaService } from '@/services/common'
 import { postService } from '@/services/post'
-import { Button, ButtonText, Image, Text, Toast, ToastTitle, VStack, View, useToast } from '@gluestack-ui/themed'
+import {
+  CheckIcon,
+  CloseIcon,
+  HStack,
+  Icon,
+  Image,
+  Pressable,
+  Text,
+  Textarea,
+  TextareaInput,
+  View,
+} from '@gluestack-ui/themed'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import * as ImagePicker from 'expo-image-picker'
 import { router } from 'expo-router'
@@ -16,50 +27,29 @@ import { useState } from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 export default function PostCreate() {
-  const toast = useToast()
   const safeAreaInsets = useSafeAreaInsets()
-  const [imageAsset, setImage] = useState<ImagePicker.ImagePickerAsset>()
   const queryClient = useQueryClient()
+  const [tabKey, setTabKey] = useState('1')
+
+  const [imageAsset, setImage] = useState<ImagePicker.ImagePickerAsset>()
   const [favoriteId, setFavoriteId] = useState('')
+  const [categoryId, setCategoryId] = useState('')
+  const [content, setContent] = useState('')
 
   const { mutate: onSubmit } = useMutation({
     mutationFn: async () => {
       if (!imageAsset) return
-
-      if (imageAsset.fileSize && imageAsset.fileSize > 1024 * 1024 * 10) {
-        toast.show({
-          placement: 'top',
-          render: ({ id }) => (
-            <Toast nativeID={`toast-${id}`} action='attention' variant='solid' bg='$error700'>
-              <VStack space='xs'>
-                <ToastTitle color='$textLight50'>image size too large</ToastTitle>
-              </VStack>
-            </Toast>
-          ),
-        })
-        return
-      }
-
-      const imageUrl = await mediaService.upload(imageAsset)
+      const res = await mediaService.upload(imageAsset)
       await postService.create({
-        imageUrl,
+        imageUrl: res,
         imageWidth: imageAsset.width,
         imageHeight: imageAsset.height,
         favoriteId,
+        categoryId,
+        content,
       })
     },
     onSuccess: () => {
-      toast.show({
-        placement: 'top',
-        render: ({ id }) => (
-          <Toast nativeID={`toast-${id}`} action='attention' variant='solid' bg='$success700'>
-            <VStack space='xs'>
-              <ToastTitle color='$textLight50'>create success</ToastTitle>
-            </VStack>
-          </Toast>
-        ),
-      })
-
       queryClient.invalidateQueries({ queryKey: ['post', 'page'] })
       router.back()
       router.replace('/')
@@ -67,7 +57,6 @@ export default function PostCreate() {
   })
 
   const pickImage = async () => {
-    // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       quality: 1,
@@ -81,15 +70,19 @@ export default function PostCreate() {
   return (
     <>
       <View style={{ paddingTop: safeAreaInsets.top, paddingBottom: safeAreaInsets.bottom }}>
-        <Button onPress={() => router.back()}>
-          <ButtonText>back home</ButtonText>
-        </Button>
+        <HStack justifyContent='space-between'>
+          <Pressable onPress={() => router.back()}>
+            <Icon as={CloseIcon} m='$2' w='$6' h='$6' />
+          </Pressable>
 
-        <Button onPress={pickImage}>
-          <Text>select a image</Text>
-        </Button>
+          <Pressable disabled={isNil(imageAsset)} onPress={() => onSubmit()}>
+            <Icon as={CheckIcon} m='$2' w='$6' h='$6' />
+          </Pressable>
+        </HStack>
 
-        {imageAsset && <Image role='img' size='md' alt='selected image' source={{ uri: imageAsset.uri }} />}
+        <Pressable onPress={pickImage}>
+          <Image role='img' bgColor='$gray' size='md' alt='selected image' source={{ uri: imageAsset?.uri }} />
+        </Pressable>
 
         <View margin='$4'>
           <Text>{imageAsset?.width}</Text>
@@ -97,11 +90,11 @@ export default function PostCreate() {
           <Text>{imageAsset?.fileSize}</Text>
         </View>
 
-        <FavoriteTools selected={favoriteId} onSelect={setFavoriteId} />
+        <Textarea size='md' w='$full'>
+          <TextareaInput placeholder='Your text goes here...' value={content} onChangeText={setContent} />
+        </Textarea>
 
-        <Button disabled={isNil(imageAsset)} onPress={() => onSubmit()}>
-          <Text>Submit</Text>
-        </Button>
+        <FavoriteTools selected={favoriteId} onSelect={setFavoriteId} />
       </View>
     </>
   )

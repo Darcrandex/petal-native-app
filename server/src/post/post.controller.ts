@@ -31,7 +31,9 @@ export class PostController {
         content: data.content,
         user: { connect: { id: req.user.id } },
         favorites: { connect: { id: data.favoriteId } },
-        categories: { connect: { id: data.categoryId } },
+        categories: data.categoryId
+          ? { connect: { id: data.categoryId } }
+          : undefined,
       },
     })
 

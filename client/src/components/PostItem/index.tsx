@@ -26,7 +26,7 @@ export default function PostItem(props: PostItemProps) {
     enabled: !!props.data.imageUrl,
     queryFn: async () => {
       const res = await mediaService.getAccessPath(props.data.imageUrl)
-      return { uri: res.data }
+      return { uri: res }
     },
   })
 

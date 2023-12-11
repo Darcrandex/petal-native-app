@@ -5,7 +5,6 @@ import { JwtModule } from '@nestjs/jwt'
 import { DbService } from 'src/db/db.service'
 import { AuthController } from './auth.controller'
 import { AuthGuard } from './auth.guard'
-import { AuthService } from './auth.service'
 
 @Module({
   imports: [
@@ -25,7 +24,6 @@ import { AuthService } from './auth.service'
 
   controllers: [AuthController],
   providers: [
-    AuthService,
     DbService,
 
     // 注册为全局守卫

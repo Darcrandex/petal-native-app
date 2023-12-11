@@ -38,6 +38,10 @@ export default function FavoriteTools(props: FavoriteToolsProps) {
     },
   })
 
+  const canCreate = useMemo(() => {
+    return keyword && !data?.some((item) => item.name === keyword)
+  }, [keyword, data])
+
   return (
     <>
       <View>
@@ -45,9 +49,9 @@ export default function FavoriteTools(props: FavoriteToolsProps) {
           <InputField placeholder='搜索画板' value={keyword} onChange={(e) => setKeyword(e.nativeEvent.text)} />
         </Input>
 
-        {!!keyword.trim() && (
+        {canCreate && (
           <Pressable my='$6' onPress={() => mutate()}>
-            <Text>新建{keyword}画板</Text>
+            <Text>新建 「{keyword}」 画板</Text>
           </Pressable>
         )}
       </View>
@@ -55,7 +59,7 @@ export default function FavoriteTools(props: FavoriteToolsProps) {
       {filteredData?.map((item) => (
         <Pressable
           key={item.id}
-          my='$4'
+          my='$2'
           bg={selected === item.id ? '$primary500' : 'transparent'}
           onPress={() => onSelect(item.id)}
         >

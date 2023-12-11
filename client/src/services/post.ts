@@ -7,5 +7,5 @@ export const postService = {
 
   pages: async (params?: PageParams): Promise<PageData<PostModel>> => http.get('/post', { params }),
 
-  getById: async (id: string) => http.get<PostModel>(`/post/${id}`),
+  getById: async (id: string): Promise<PostModel> => http.get(`/post/${id}`),
 }

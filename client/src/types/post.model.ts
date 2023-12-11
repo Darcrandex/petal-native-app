@@ -7,4 +7,5 @@ export type PostModel = {
   status?: 'saved' | 'published' | 'rejected'
 
   favoriteId?: string
+  categoryId?: string
 }
