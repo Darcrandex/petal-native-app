@@ -23,7 +23,7 @@ export class AuthController {
 
   @PublicRoute()
   @Post('registry')
-  async registry(@Body() data: Prisma.UserCreateInput) {
+  async registry(@Body() data: any) {
     const salt = genSaltSync(10)
     const password = data.password
     const hash = hashSync(password, salt)
