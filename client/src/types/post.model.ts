@@ -1,3 +1,5 @@
+import { CategoryModel } from './category.model'
+
 export type PostModel = {
   id: string
   imageUrl: string
@@ -8,4 +10,5 @@ export type PostModel = {
 
   favoriteId?: string
   categoryId?: string
+  categories?: CategoryModel[]
 }

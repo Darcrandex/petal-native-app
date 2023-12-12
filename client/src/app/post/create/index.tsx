@@ -1,10 +1,9 @@
 /**
  * @name PostCreate
- * @description 新建
+ * @description 新建页面
  * @author darcrand
  */
 
-import FavoriteTools from '@/components/FavoriteTools'
 import { mediaService } from '@/services/common'
 import { postService } from '@/services/post'
 import {
@@ -14,7 +13,6 @@ import {
   Icon,
   Image,
   Pressable,
-  Text,
   Textarea,
   TextareaInput,
   View,
@@ -22,22 +20,35 @@ import {
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import * as ImagePicker from 'expo-image-picker'
 import { router } from 'expo-router'
-import { head, isNil, isNotNil } from 'ramda'
+import { isNil } from 'ramda'
 import { useState } from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import CategorySelect from './CategorySelect'
+import FavoriteSelect from './FavoriteSelect'
+
+type FormValues = {
+  imageAsset?: ImagePicker.ImagePickerAsset
+  favoriteId?: string
+  categoryId?: string
+  content?: string
+}
 
 export default function PostCreate() {
   const safeAreaInsets = useSafeAreaInsets()
   const queryClient = useQueryClient()
-  const [tabKey, setTabKey] = useState('1')
 
-  const [imageAsset, setImage] = useState<ImagePicker.ImagePickerAsset>()
-  const [favoriteId, setFavoriteId] = useState('')
-  const [categoryId, setCategoryId] = useState('')
-  const [content, setContent] = useState('')
+  const [values, setValues] = useState<FormValues>({
+    imageAsset: undefined,
+    favoriteId: '',
+    categoryId: '',
+    content: '',
+  })
+
+  const canSubmit = Boolean(values.categoryId && values.favoriteId && values.imageAsset)
 
   const { mutate: onSubmit } = useMutation({
     mutationFn: async () => {
+      const { imageAsset, favoriteId, categoryId, content } = values
       if (!imageAsset) return
       const res = await mediaService.upload(imageAsset)
       await postService.create({
@@ -62,8 +73,8 @@ export default function PostCreate() {
       quality: 1,
     })
 
-    if (!result.canceled && isNotNil(result.assets)) {
-      setImage(head(result.assets))
+    if (!result.canceled && result.assets && result.assets.length > 0) {
+      setValues((prev) => ({ ...prev, imageAsset: result.assets?.[0] }))
     }
   }
 
@@ -75,26 +86,32 @@ export default function PostCreate() {
             <Icon as={CloseIcon} m='$2' w='$6' h='$6' />
           </Pressable>
 
-          <Pressable disabled={isNil(imageAsset)} onPress={() => onSubmit()}>
-            <Icon as={CheckIcon} m='$2' w='$6' h='$6' />
+          <Pressable disabled={isNil(values.imageAsset)} onPress={() => onSubmit()}>
+            <Icon as={CheckIcon} m='$2' w='$6' h='$6' color={canSubmit ? '$success300' : '$red200'} />
           </Pressable>
         </HStack>
 
         <Pressable onPress={pickImage}>
-          <Image role='img' bgColor='$gray' size='md' alt='selected image' source={{ uri: imageAsset?.uri }} />
+          <Image role='img' bg='$warmGray200' size='md' alt='selected image' source={{ uri: values.imageAsset?.uri }} />
         </Pressable>
 
-        <View margin='$4'>
-          <Text>{imageAsset?.width}</Text>
-          <Text>{imageAsset?.height}</Text>
-          <Text>{imageAsset?.fileSize}</Text>
-        </View>
-
         <Textarea size='md' w='$full'>
-          <TextareaInput placeholder='Your text goes here...' value={content} onChangeText={setContent} />
+          <TextareaInput
+            placeholder='Your text goes here...'
+            value={values.content}
+            onChangeText={(val) => setValues((prev) => ({ ...prev, content: val }))}
+          />
         </Textarea>
 
-        <FavoriteTools selected={favoriteId} onSelect={setFavoriteId} />
+        <FavoriteSelect
+          value={values.favoriteId}
+          onChange={(val) => setValues((prev) => ({ ...prev, favoriteId: val }))}
+        />
+
+        <CategorySelect
+          value={values.categoryId}
+          onChange={(val) => setValues((prev) => ({ ...prev, categoryId: val }))}
+        />
       </View>
     </>
   )

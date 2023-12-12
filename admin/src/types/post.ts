@@ -5,4 +5,6 @@ export type PostItem = {
   imageHeight: number
   content?: string
   status?: 'saved' | 'published' | 'rejected'
+
+  categories?: { id: string; name: string }[]
 }

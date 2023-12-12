@@ -11,7 +11,7 @@ import {
 import { Prisma } from '@prisma/client'
 import { DbService } from 'src/db/db.service'
 
-@Controller('cate')
+@Controller('category')
 export class CateController {
   constructor(private readonly db: DbService) {}
 

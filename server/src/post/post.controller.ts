@@ -76,6 +76,9 @@ export class PostController {
     const list = await this.db.post.findMany({
       skip: (page - 1) * pageSize,
       take: pageSize,
+      include: {
+        categories: true,
+      },
     })
 
     const total = await this.db.post.count()

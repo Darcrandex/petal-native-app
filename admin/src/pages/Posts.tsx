@@ -7,9 +7,11 @@
 import RemoveButton from '@/components/RemoveButton'
 import SearchForm from '@/components/SearchForm'
 import { useTableSearch } from '@/hooks/useTableSearch'
+import { commonService } from '@/services/common'
 import { postService } from '@/services/post'
 import { PostItem } from '@/types/post'
-import { Button, Table } from 'antd'
+import { useQuery } from '@tanstack/react-query'
+import { Button, Image, Table } from 'antd'
 import { useMemo } from 'react'
 
 export default function Posts() {
@@ -21,14 +23,21 @@ export default function Posts() {
   const columns = useMemo(
     () => [
       {
-        title: '描述',
-        dataIndex: 'content',
-        key: 'content',
-      },
-      {
         title: '图片',
         dataIndex: 'imageUrl',
         key: 'imageUrl',
+        width: 220,
+        render: (imageUrl: string) => <ImageView imageUrl={imageUrl} />,
+      },
+      {
+        title: '分类',
+        key: 'category',
+        render: (_: any, record: PostItem) => record.categories?.map((c) => c.name).join(', '),
+      },
+      {
+        title: '描述',
+        dataIndex: 'content',
+        key: 'content',
       },
       {
         title: '操作',
@@ -61,5 +70,18 @@ export default function Posts() {
 
       <Table className='m-4' columns={columns} {...tableProps} />
     </>
+  )
+}
+
+function ImageView(props: { imageUrl: string }) {
+  const { data: imageUrl } = useQuery({
+    queryKey: ['image', 'view', 'access', props.imageUrl],
+    queryFn: () => commonService.getImageAccessPath(props.imageUrl),
+  })
+
+  return (
+    <div className='w-32 h-32 overflow-hidden'>
+      <Image width={128} src={imageUrl} placeholder />
+    </div>
   )
 }
