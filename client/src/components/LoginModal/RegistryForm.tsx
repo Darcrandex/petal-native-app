@@ -4,10 +4,11 @@
  * @author darcrand
  */
 
-import { userService } from '@/services/user'
 import { Button, ButtonText, HStack, Input, InputField, Pressable, Text, VStack } from '@gluestack-ui/themed'
 import { useMutation } from '@tanstack/react-query'
 import { useState } from 'react'
+
+import { userService } from '@/services/user'
 
 export type RegistryFormProps = { setTabKey: (key: string) => void }
 

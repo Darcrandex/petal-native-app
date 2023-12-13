@@ -4,8 +4,6 @@
  * @author darcrand
  */
 
-import { mediaService } from '@/services/common'
-import { postService } from '@/services/post'
 import {
   CheckIcon,
   CloseIcon,
@@ -23,8 +21,12 @@ import { router } from 'expo-router'
 import { isNil } from 'ramda'
 import { useState } from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+
 import CategorySelect from './CategorySelect'
 import FavoriteSelect from './FavoriteSelect'
+
+import { mediaService } from '@/services/common'
+import { postService } from '@/services/post'
 
 type FormValues = {
   imageAsset?: ImagePicker.ImagePickerAsset
@@ -68,7 +70,7 @@ export default function PostCreate() {
   })
 
   const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
+    const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       quality: 1,
     })

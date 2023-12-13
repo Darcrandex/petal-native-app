@@ -4,11 +4,6 @@
  * @author darcrand
  */
 
-import PostItem from '@/components/PostItem'
-import { cateService } from '@/services/cate'
-import { postService } from '@/services/post'
-import { PostModel } from '@/types/post.model'
-import NavBar from '@/ui/NavBar'
 import { HStack, Pressable, ScrollView, VStack } from '@gluestack-ui/themed'
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
 import { useDebounceFn } from 'ahooks'
@@ -16,6 +11,12 @@ import { router } from 'expo-router'
 import { useCallback, useEffect, useState } from 'react'
 import { Dimensions, NativeScrollEvent, NativeSyntheticEvent, RefreshControl } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+
+import PostItem from '@/components/PostItem'
+import { cateService } from '@/services/cate'
+import { postService } from '@/services/post'
+import { PostModel } from '@/types/post.model'
+import NavBar from '@/ui/NavBar'
 
 type Column = {
   id: string
@@ -86,7 +87,7 @@ export default function Follow() {
       mergedPosts?.forEach((v) => {
         const minHeightColumn = newColumns.reduce<Column | null>(
           (acc, cur) => (!acc || cur.totalHeight < acc.totalHeight ? cur : acc),
-          null
+          null,
         )
 
         if (minHeightColumn) {
@@ -113,7 +114,7 @@ export default function Follow() {
     () => {
       if (hasNextPage) fetchNextPage()
     },
-    { wait: 1000 }
+    { wait: 1000 },
   )
 
   const onScroll = useCallback(
@@ -125,7 +126,7 @@ export default function Follow() {
 
       if (isCloseToBottom) onLoadMore()
     },
-    [onLoadMore]
+    [onLoadMore],
   )
 
   return (

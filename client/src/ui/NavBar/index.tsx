@@ -21,7 +21,6 @@ import {
 } from '@gluestack-ui/themed'
 import { useControllableValue } from 'ahooks'
 import { useState } from 'react'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 export type NavBarProps = {
   value?: string
@@ -33,7 +32,6 @@ export type NavBarProps = {
 export default function NavBar(props: NavBarProps) {
   const [value, onChange] = useControllableValue(props)
   const [open, setOpen] = useState(false)
-  const safeAreaInsets = useSafeAreaInsets()
 
   return (
     <>

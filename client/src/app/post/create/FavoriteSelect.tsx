@@ -4,13 +4,14 @@
  * @author darcrand
  */
 
-import { favoriteService } from '@/services/favorite'
 import { CloseIcon, Icon, Input, InputField, Pressable, Text, View } from '@gluestack-ui/themed'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useControllableValue } from 'ahooks'
 import { useState } from 'react'
 import { Modal } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+
+import { favoriteService } from '@/services/favorite'
 
 export type FavoriteSelectProps = {
   value?: string

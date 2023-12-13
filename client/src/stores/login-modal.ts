@@ -9,8 +9,8 @@ export function useLoginModal() {
   const [state, setState] = useAtom(loginAtom)
   const { isOpen } = state
 
-  const onOpen = useCallback(() => setState({ isOpen: true }), [])
-  const onClose = useCallback(() => setState({ isOpen: false }), [])
+  const onOpen = useCallback(() => setState({ isOpen: true }), [setState])
+  const onClose = useCallback(() => setState({ isOpen: false }), [setState])
 
   return { isOpen, onOpen, onClose }
 }

@@ -4,13 +4,14 @@
  * @author darcrand
  */
 
-import { cateService } from '@/services/cate'
 import { CloseIcon, Icon, Pressable, Text, View } from '@gluestack-ui/themed'
 import { useQuery } from '@tanstack/react-query'
 import { useControllableValue } from 'ahooks'
 import { useState } from 'react'
 import { Modal } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+
+import { cateService } from '@/services/cate'
 
 export type CategorySelectProps = {
   value?: string

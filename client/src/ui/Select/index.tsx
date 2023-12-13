@@ -22,7 +22,7 @@ export default function Select(props: SelectProps) {
 
   return (
     <>
-      <Modal visible={open} animationType='fade' transparent onRequestClose={onClose}></Modal>
+      <Modal visible={open} animationType='fade' transparent onRequestClose={onClose} />
     </>
   )
 }

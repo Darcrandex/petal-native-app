@@ -4,14 +4,15 @@
  * @author darcrand
  */
 
-import NavButton from '@/components/NavButton'
-import { userService } from '@/services/user'
-import { useLoginModal } from '@/stores/login-modal'
 import { AddIcon, BellIcon, HStack, Icon, MoonIcon, Pressable, VStack } from '@gluestack-ui/themed'
 import { Slot, useRouter } from 'expo-router'
 import { useCallback } from 'react'
 import { useWindowDimensions } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+
+import NavButton from '@/components/NavButton'
+import { userService } from '@/services/user'
+import { useLoginModal } from '@/stores/login-modal'
 
 export default function TabsLayout() {
   const safeAreaInsets = useSafeAreaInsets()
@@ -27,9 +28,9 @@ export default function TabsLayout() {
 
         if (res) {
           router.push('/post/create')
-          return
         }
       } catch (e) {
+        console.log(e)
         onOpen()
       }
     }

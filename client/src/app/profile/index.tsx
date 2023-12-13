@@ -4,8 +4,6 @@
  * @author darcrand
  */
 
-import { mediaService } from '@/services/common'
-import { userService } from '@/services/user'
 import {
   ArrowLeftIcon,
   Button,
@@ -24,6 +22,9 @@ import * as ImagePicker from 'expo-image-picker'
 import { useRouter } from 'expo-router'
 import { useEffect, useState } from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+
+import { mediaService } from '@/services/common'
+import { userService } from '@/services/user'
 
 export default function Profile() {
   const router = useRouter()
@@ -46,7 +47,7 @@ export default function Profile() {
   }, [userInfo])
 
   const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
+    const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       quality: 1,
     })

@@ -4,13 +4,14 @@
  * @author darcrand
  */
 
-import { mediaService } from '@/services/common'
-import { PostModel } from '@/types/post.model'
-import { getColorFromStr } from '@/utils/getColorFromStr'
 import { Avatar, AvatarFallbackText, AvatarImage, HStack, Image, Text, VStack, View } from '@gluestack-ui/themed'
 import { useQuery } from '@tanstack/react-query'
 import { useMemo } from 'react'
 import { Dimensions } from 'react-native'
+
+import { mediaService } from '@/services/common'
+import { PostModel } from '@/types/post.model'
+import { getColorFromStr } from '@/utils/getColorFromStr'
 
 const PADDING = 6
 

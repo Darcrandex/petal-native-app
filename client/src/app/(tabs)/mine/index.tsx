@@ -4,8 +4,6 @@
  * @author darcrand
  */
 
-import { mediaService } from '@/services/common'
-import { userService } from '@/services/user'
 import {
   Avatar,
   AvatarFallbackText,
@@ -22,6 +20,9 @@ import {
 import { useQuery } from '@tanstack/react-query'
 import { useRouter } from 'expo-router'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+
+import { mediaService } from '@/services/common'
+import { userService } from '@/services/user'
 
 export default function Mine() {
   const router = useRouter()

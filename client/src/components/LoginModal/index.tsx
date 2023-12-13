@@ -4,12 +4,14 @@
  * @author darcrand
  */
 
-import { useLoginModal } from '@/stores/login-modal'
 import { Pressable, Text, View } from '@gluestack-ui/themed'
 import { useState } from 'react'
 import { Modal } from 'react-native'
+
 import LoginForm from './LoginForm'
 import RegistryForm from './RegistryForm'
+
+import { useLoginModal } from '@/stores/login-modal'
 
 export default function LoginModal() {
   const { isOpen, onClose } = useLoginModal()

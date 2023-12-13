@@ -4,13 +4,14 @@
  * @author darcrand
  */
 
-import { mediaService } from '@/services/common'
-import { postService } from '@/services/post'
 import { ArrowLeftIcon, HStack, Icon, Image, Pressable, ScrollView, VStack } from '@gluestack-ui/themed'
 import { useQuery } from '@tanstack/react-query'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { Dimensions } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+
+import { mediaService } from '@/services/common'
+import { postService } from '@/services/post'
 
 export default function PostDetail() {
   const id = useLocalSearchParams().id as string
