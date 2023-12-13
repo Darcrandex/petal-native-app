@@ -1,14 +1,14 @@
 /**
  * @name PostItem
- * @description
+ * @description 列表中的采集
  * @author darcrand
  */
 
 import { mediaService } from '@/services/common'
 import { PostModel } from '@/types/post.model'
+import { getColorFromStr } from '@/utils/getColorFromStr'
 import { Avatar, AvatarFallbackText, AvatarImage, HStack, Image, Text, VStack, View } from '@gluestack-ui/themed'
 import { useQuery } from '@tanstack/react-query'
-import { hsl } from 'color'
 import { useMemo } from 'react'
 import { Dimensions } from 'react-native'
 
@@ -24,34 +24,27 @@ export default function PostItem(props: PostItemProps) {
     return { width, height }
   }, [props.data])
 
-  const { data: imageSource } = useQuery({
+  const { data: imageUri } = useQuery({
     queryKey: ['post', 'item', 'image', props.data.imageUrl],
     enabled: !!props.data.imageUrl,
-    queryFn: async () => {
-      const res = await mediaService.getAccessPath(props.data.imageUrl)
-      return { uri: res }
-    },
+    queryFn: () => mediaService.getAccessPath(props.data.imageUrl),
+    placeholderData: 'https://placehold.co/300',
   })
 
-  const bgColor = useMemo(() => {
-    const h = props.data.id.split('').reduce((prev, curr) => prev + curr.charCodeAt(0), 0)
-    return hsl(h, 85, 65).rgb().toString()
-  }, [props.data.id])
+  const bgColor = getColorFromStr(props.data.id)
 
-  const avatarBgColor = useMemo(() => {
-    if (!props.data.user?.username) return ''
-    const h = props.data.user?.username.split('').reduce((prev, curr) => prev + curr.charCodeAt(0), 0)
-    return hsl(h, 85, 65).rgb().toString()
-  }, [props.data.user?.username])
+  const avatarBgColor = getColorFromStr(props.data.user?.username)
 
   const { data: avatarUrl } = useQuery({
     queryKey: ['user', 'avatar', 'url'],
     enabled: !!props.data.user?.avatar,
     queryFn: () => mediaService.getAccessPath(props.data.user?.avatar || ''),
+    placeholderData: 'https://placehold.co/300',
   })
 
-  const matchedFavorite = useMemo(() => {
-    return props.data.favorites?.find((f) => f.user?.id === props.data.user?.id)
+  // 当前采集的作者所收藏的收藏夹
+  const creatorFavorite = useMemo(() => {
+    return props.data.favorites?.find((f) => f.userId === props.data.userId)
   }, [props.data])
 
   return (
@@ -60,7 +53,7 @@ export default function PostItem(props: PostItemProps) {
         <Image
           width={viewSize.width}
           height={viewSize.height}
-          source={imageSource?.uri || ''}
+          source={{ uri: imageUri }}
           alt=''
           role='img'
           style={{ borderTopLeftRadius: PADDING, borderTopRightRadius: PADDING, backgroundColor: bgColor }}
@@ -77,7 +70,7 @@ export default function PostItem(props: PostItemProps) {
           <HStack space='xs' alignItems='center'>
             <Avatar size='sm' borderRadius='$full' style={{ backgroundColor: avatarBgColor }}>
               <AvatarFallbackText>{props.data.user?.nickname}</AvatarFallbackText>
-              <AvatarImage source={{ uri: avatarUrl || 'https://i.pravatar.cc/300' }} />
+              <AvatarImage source={{ uri: avatarUrl }} />
             </Avatar>
 
             <View>
@@ -85,7 +78,7 @@ export default function PostItem(props: PostItemProps) {
                 {props.data.user?.nickname}
               </Text>
               <Text fontSize='$xs' color='$secondary400' lineHeight='$xs'>
-                {matchedFavorite?.name}
+                {creatorFavorite?.name}
               </Text>
             </View>
           </HStack>

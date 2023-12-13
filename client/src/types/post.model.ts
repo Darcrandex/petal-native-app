@@ -14,5 +14,6 @@ export type PostModel = {
   categoryId?: string
   categories?: CategoryModel[]
   favorites?: FavoriteModel[]
+  userId: string
   user?: UserModel
 }

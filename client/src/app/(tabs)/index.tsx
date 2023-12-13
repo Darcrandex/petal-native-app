@@ -1,6 +1,6 @@
 /**
  * @name Follow
- * @description
+ * @description 首页
  * @author darcrand
  */
 
@@ -9,7 +9,6 @@ import { cateService } from '@/services/cate'
 import { postService } from '@/services/post'
 import { PostModel } from '@/types/post.model'
 import NavBar from '@/ui/NavBar'
-import { uuid } from '@/utils/uuid'
 import { HStack, Pressable, ScrollView, VStack } from '@gluestack-ui/themed'
 import { useQuery } from '@tanstack/react-query'
 import { useDebounceFn } from 'ahooks'
@@ -24,14 +23,6 @@ type Column = {
   posts: PostModel[]
   totalHeight: number
 }
-
-const tabs = Array(20)
-  .fill(0)
-  .map((_, i) => ({
-    id: uuid(),
-    label: `Tab ${i + 1}`,
-    key: `tab-${i + 1}`,
-  }))
 
 export default function Follow() {
   const safeAreaInsets = useSafeAreaInsets()

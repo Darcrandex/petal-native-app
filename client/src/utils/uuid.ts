@@ -1,4 +1,5 @@
-function randomString({
+// 生成随机字符串
+export function randomString({
   length = 8,
   includeNumber = true, // 包含数字
   includeLower = true, // 包含小写字母
@@ -9,7 +10,7 @@ function randomString({
   noDuplicate = false, // 字符不重复
   noSequential = false, // 字符不连续 123 abc
 } = {}) {
-  const len = Math.min(50, Math.max(0, length))
+  const len = Math.min(64, Math.max(1, length))
   const n = '0123456789'
   const low = 'abcdefghijklmnopqrstuvwxyz'
   const up = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
