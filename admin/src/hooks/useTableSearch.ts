@@ -55,7 +55,13 @@ export function useTableSearch<T>(options: TableSearchOptions<T>) {
       loading: isLoading,
       dataSource: result?.list,
       onChange,
-      pagination: { hideOnSinglePage: true, showTotal: (total) => `共 ${total} 条` },
+      pagination: {
+        hideOnSinglePage: true,
+        total: result?.total,
+        showSizeChanger: true,
+        pageSizeOptions: ['5', '10', '20', '50'],
+        showTotal: (total) => `共 ${total} 条`,
+      },
     } as TableProps<T>,
   }
 }

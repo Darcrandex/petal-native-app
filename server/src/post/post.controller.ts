@@ -69,8 +69,8 @@ export class PostController {
 
   @PublicRoute()
   @Get()
-  async findAll(@Query() parmas: { page?: number; pageSize?: number }) {
-    const current = Math.max(1, parmas.page || 1)
+  async findAll(@Query() parmas: { current?: number; pageSize?: number }) {
+    const current = Math.max(1, parmas.current || 1)
     const pageSize = Math.max(1, parmas.pageSize || 10)
 
     const list = await this.db.post.findMany({
