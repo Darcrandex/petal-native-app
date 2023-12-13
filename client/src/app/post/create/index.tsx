@@ -92,7 +92,13 @@ export default function PostCreate() {
         </HStack>
 
         <Pressable onPress={pickImage}>
-          <Image role='img' bg='$warmGray200' size='md' alt='selected image' source={{ uri: values.imageAsset?.uri }} />
+          <Image
+            role='img'
+            bg='$warmGray200'
+            size='md'
+            alt='selected image'
+            source={{ uri: values.imageAsset?.uri || 'https://placehold.co/300' }}
+          />
         </Pressable>
 
         <Textarea size='md' w='$full'>

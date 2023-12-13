@@ -17,10 +17,7 @@ export default function RegistryForm(props: RegistryFormProps) {
 
   const { mutate: onSubmit } = useMutation({
     mutationFn: async () => {
-      console.log('ddd', username, password)
-
       if (!username || !password) return
-
       return await userService.registry({ username, password })
     },
 

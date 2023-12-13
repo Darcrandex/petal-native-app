@@ -70,11 +70,11 @@ export class PostController {
   @PublicRoute()
   @Get()
   async findAll(@Query() parmas: { page?: number; pageSize?: number }) {
-    const page = Math.max(1, parmas.page || 1)
+    const current = Math.max(1, parmas.page || 1)
     const pageSize = Math.max(1, parmas.pageSize || 10)
 
     const list = await this.db.post.findMany({
-      skip: (page - 1) * pageSize,
+      skip: (current - 1) * pageSize,
       take: pageSize,
       include: {
         user: {
@@ -86,6 +86,6 @@ export class PostController {
     })
 
     const total = await this.db.post.count()
-    return { list, total, page, pageSize }
+    return { list, total, current, pageSize }
   }
 }

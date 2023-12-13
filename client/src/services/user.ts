@@ -10,5 +10,5 @@ export const userService = {
 
   profile: (): Promise<UserModel> => http.get('/user/profile'),
 
-  update: (data: Partial<UserModel>): Promise<any> => http.put('/user/update', data),
+  update: (data: Partial<UserModel>): Promise<UserModel> => http.put('/user/update', data),
 }

@@ -10,10 +10,9 @@ import { postService } from '@/services/post'
 import { PostModel } from '@/types/post.model'
 import NavBar from '@/ui/NavBar'
 import { HStack, Pressable, ScrollView, VStack } from '@gluestack-ui/themed'
-import { useQuery } from '@tanstack/react-query'
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
 import { useDebounceFn } from 'ahooks'
 import { router } from 'expo-router'
-import { isNil } from 'ramda'
 import { useCallback, useEffect, useState } from 'react'
 import { Dimensions, NativeScrollEvent, NativeSyntheticEvent, RefreshControl } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -42,13 +41,38 @@ export default function Follow() {
     }
   }, [query, categories])
 
-  const { data, refetch, isLoading } = useQuery({
+  const {
+    data: mergedPosts,
+    fetchNextPage,
+    hasNextPage,
+    refetch,
+    isLoading,
+  } = useInfiniteQuery({
     queryKey: ['post', 'page', query],
-    queryFn: async () => postService.pages(query),
+    queryFn: (p) => {
+      const { pageParam } = p
+      return postService.pages({ ...query, page: pageParam })
+    },
+    initialPageParam: 0,
+    getNextPageParam: (lastPage) => {
+      const { total, pageSize, current } = lastPage
+      const maxPage = Math.ceil(total / pageSize)
+      const hasNextPage = current < maxPage
+      return hasNextPage ? current + 1 : undefined
+    },
+    getPreviousPageParam: (firstPage) => {
+      return firstPage.current > 2 ? firstPage.current - 1 : undefined
+    },
+    select(data) {
+      return data.pages.reduce<PostModel[]>((acc, cur) => {
+        return [...acc, ...cur.list]
+      }, [])
+    },
   })
 
   useEffect(() => {
-    if (isNil(data)) return
+    if (!mergedPosts) return
+
     setColumns(() => {
       const winSize = Dimensions.get('window')
       // 所有图片的显示宽度
@@ -59,7 +83,7 @@ export default function Follow() {
         { id: `col-2`, posts: [], totalHeight: 0 },
       ]
 
-      data?.list?.forEach((v) => {
+      mergedPosts?.forEach((v) => {
         const minHeightColumn = newColumns.reduce<Column | null>(
           (acc, cur) => (!acc || cur.totalHeight < acc.totalHeight ? cur : acc),
           null
@@ -78,7 +102,7 @@ export default function Follow() {
 
       return newColumns
     })
-  }, [data])
+  }, [mergedPosts])
 
   const onNavigate = (id: string) => {
     router.push(`/post/${id}`)
@@ -87,7 +111,7 @@ export default function Follow() {
   // load more
   const { run: onLoadMore } = useDebounceFn(
     () => {
-      console.log('load more')
+      if (hasNextPage) fetchNextPage()
     },
     { wait: 1000 }
   )

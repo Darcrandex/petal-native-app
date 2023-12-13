@@ -24,6 +24,7 @@ export default function TabsLayout() {
     const fn = async () => {
       try {
         const res = await userService.profile()
+
         if (res) {
           router.push('/post/create')
           return

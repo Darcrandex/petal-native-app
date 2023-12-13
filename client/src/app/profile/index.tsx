@@ -65,8 +65,7 @@ export default function Profile() {
       }
 
       const merged = { nickname, avatar: avatar || userInfo?.avatar }
-      const res = await userService.update(merged)
-      console.log({ res })
+      await userService.update(merged)
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['user'] })

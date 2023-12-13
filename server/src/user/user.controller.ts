@@ -18,7 +18,13 @@ export class UserController {
     if (req.user.id) {
       return this.db.user.findFirst({
         where: { id: req.user.id },
-        select: { password: false },
+        select: {
+          password: false,
+          id: true,
+          username: true,
+          nickname: true,
+          avatar: true,
+        },
       })
     } else {
       throw new BadRequestException('请先登录')
