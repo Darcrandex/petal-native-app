@@ -5,10 +5,12 @@
  */
 
 import PostItem from '@/components/PostItem'
+import { cateService } from '@/services/cate'
 import { postService } from '@/services/post'
 import { PostModel } from '@/types/post.model'
+import NavBar from '@/ui/NavBar'
 import { uuid } from '@/utils/uuid'
-import { Box, HStack, Pressable, ScrollView, Text, VStack } from '@gluestack-ui/themed'
+import { HStack, Pressable, ScrollView, VStack } from '@gluestack-ui/themed'
 import { useQuery } from '@tanstack/react-query'
 import { useDebounceFn } from 'ahooks'
 import { router } from 'expo-router'
@@ -35,9 +37,23 @@ export default function Follow() {
   const safeAreaInsets = useSafeAreaInsets()
   const [columns, setColumns] = useState<Column[]>([])
 
-  const { data, refetch, isLoading, isError } = useQuery({
-    queryKey: ['post', 'page'],
-    queryFn: async () => postService.pages(),
+  const { data: categories } = useQuery({
+    queryKey: ['category', 'all'],
+    queryFn: () => cateService.all({ pageSize: 100 }),
+    select: (res) => res.list,
+  })
+
+  const [query, setQuery] = useState({ category: '' })
+
+  useEffect(() => {
+    if (categories && categories.length > 0 && !query.category) {
+      setQuery({ category: categories[0].id })
+    }
+  }, [query, categories])
+
+  const { data, refetch, isLoading } = useQuery({
+    queryKey: ['post', 'page', query],
+    queryFn: async () => postService.pages(query),
   })
 
   useEffect(() => {
@@ -99,24 +115,16 @@ export default function Follow() {
 
   return (
     <>
-      <VStack pt={safeAreaInsets.top} flex={1} bg='$blue400'>
-        <HStack justifyContent='center'>
-          <Text>Follow</Text>
-        </HStack>
-
-        <Box>
-          <ScrollView bg='$violet300' horizontal showsHorizontalScrollIndicator={false} scrollEventThrottle={16}>
-            {tabs.map((v) => (
-              <Pressable key={v.id} height='auto' padding='$2' onPress={() => console.log(v.id)}>
-                <Text>{v.label}</Text>
-              </Pressable>
-            ))}
-          </ScrollView>
-        </Box>
+      <VStack pt={safeAreaInsets.top} flex={1}>
+        <NavBar
+          value={query.category}
+          onChange={(v) => setQuery({ category: v })}
+          items={categories?.map((v) => ({ id: v.id, label: v.name }))}
+        />
 
         <ScrollView
-          bg='$green300'
           flex={1}
+          bg='$secondary50'
           showsVerticalScrollIndicator={false}
           refreshControl={<RefreshControl refreshing={isLoading} onRefresh={refetch} />}
           scrollEventThrottle={16}

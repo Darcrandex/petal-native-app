@@ -4,4 +4,5 @@ export type UserModel = {
   password: string
 
   nickname?: string
+  avatar?: string
 }

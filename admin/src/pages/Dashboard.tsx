@@ -4,7 +4,13 @@
  * @author darcrand
  */
 
+import { cls } from '@/utils/cls'
 import { NavLink, Outlet } from 'react-router-dom'
+
+const navs = [
+  { to: 'cate', label: 'Categories' },
+  { to: 'post', label: 'Posts' },
+]
 
 export default function Dashboard() {
   return (
@@ -12,8 +18,17 @@ export default function Dashboard() {
       <section className='flex h-screen'>
         <aside className='w-60 border-r'>
           <nav className='flex flex-col space-y-2'>
-            <NavLink to='cate'>Categories</NavLink>
-            <NavLink to='post'>Posts</NavLink>
+            {navs.map(({ to, label }) => (
+              <NavLink
+                key={to}
+                to={to}
+                className={({ isActive }) =>
+                  cls('px-4 py-2 transition-all', isActive ? 'bg-blue-400 text-white' : 'hover:bg-gray-100')
+                }
+              >
+                {label}
+              </NavLink>
+            ))}
           </nav>
         </aside>
 

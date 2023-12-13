@@ -18,6 +18,7 @@ model User {
   password  String
   role      String?    @default("user")
   nickname  String?
+  avatar    String?
   posts     Post[]
   favorites Favorite[]
   createAt  DateTime?

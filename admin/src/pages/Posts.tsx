@@ -79,9 +79,5 @@ function ImageView(props: { imageUrl: string }) {
     queryFn: () => commonService.getImageAccessPath(props.imageUrl),
   })
 
-  return (
-    <div className='w-32 h-32 overflow-hidden'>
-      <Image width={128} src={imageUrl} placeholder />
-    </div>
-  )
+  return <Image src={imageUrl} placeholder className='!w-24 !h-24 object-cover' />
 }

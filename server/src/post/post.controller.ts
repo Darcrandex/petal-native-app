@@ -77,11 +77,26 @@ export class PostController {
       skip: (page - 1) * pageSize,
       take: pageSize,
       include: {
+        user: true,
+        favorites: { include: { user: true } },
         categories: true,
       },
     })
 
+    // 获取 user 时, 剔除 password
+    // prisma 似乎不能这样操作
+    const omitUserPasswordList = list.map((item) => {
+      return {
+        ...item,
+        user: { ...item.user, password: undefined },
+        favorites: item.favorites.map((f) => ({
+          ...f,
+          user: { ...f.user, password: undefined },
+        })),
+      }
+    })
+
     const total = await this.db.post.count()
-    return { list, total, page, pageSize }
+    return { list: omitUserPasswordList, total, page, pageSize }
   }
 }

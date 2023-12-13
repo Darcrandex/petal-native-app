@@ -5,9 +5,10 @@ import { AppService } from './app.service'
 import { AuthModule } from './auth/auth.module'
 import { CateModule } from './cate/cate.module'
 import { DbService } from './db/db.service'
-import { PostModule } from './post/post.module'
+import { FavoriteModule } from './favorite/favorite.module'
 import { MediaModule } from './media/media.module'
-import { FavoriteModule } from './favorite/favorite.module';
+import { PostModule } from './post/post.module'
+import { UserModule } from './user/user.module'
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { FavoriteModule } from './favorite/favorite.module';
     CateModule,
     MediaModule,
     FavoriteModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService, DbService],

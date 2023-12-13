@@ -4,17 +4,38 @@
  * @author darcrand
  */
 
+import { mediaService } from '@/services/common'
 import { userService } from '@/services/user'
-import { Avatar, Box, CalendarDaysIcon, HStack, Icon, Pressable, Text, VStack } from '@gluestack-ui/themed'
+import {
+  Avatar,
+  AvatarFallbackText,
+  AvatarImage,
+  Box,
+  CalendarDaysIcon,
+  HStack,
+  Icon,
+  Pressable,
+  SettingsIcon,
+  Text,
+  VStack,
+} from '@gluestack-ui/themed'
 import { useQuery } from '@tanstack/react-query'
+import { useRouter } from 'expo-router'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 export default function Mine() {
+  const router = useRouter()
   const safeAreaInsets = useSafeAreaInsets()
-  const { data } = useQuery({
+  const { data: userInfo } = useQuery({
     queryKey: ['user', 'profile'],
     queryFn: async () => userService.profile(),
     retry: false,
+  })
+
+  const { data: avatarUrl } = useQuery({
+    queryKey: ['user', 'avatar', 'url'],
+    enabled: !!userInfo?.avatar,
+    queryFn: () => mediaService.getAccessPath(userInfo?.avatar || ''),
   })
 
   return (
@@ -23,14 +44,19 @@ export default function Mine() {
         <HStack reversed space='md' p='$4'>
           <Icon as={CalendarDaysIcon} size='md' />
           <Icon as={CalendarDaysIcon} size='md' />
-          <Icon as={CalendarDaysIcon} size='md' />
+          <Pressable onPress={() => router.push('/profile')}>
+            <Icon as={SettingsIcon} size='md' />
+          </Pressable>
         </HStack>
 
         <HStack space='md' p='$4'>
-          <Avatar size='lg' />
+          <Avatar>
+            <AvatarFallbackText>{userInfo?.nickname}</AvatarFallbackText>
+            <AvatarImage source={{ uri: avatarUrl || 'https://i.pravatar.cc/300' }} />
+          </Avatar>
 
           <Box>
-            <Text>{data?.username || 'username'}</Text>
+            <Text>{userInfo?.nickname || userInfo?.username || 'username'}</Text>
             <Text>email</Text>
           </Box>
         </HStack>

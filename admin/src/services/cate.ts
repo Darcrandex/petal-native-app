@@ -2,13 +2,13 @@ import { PageData, PageParams } from '@/types/global'
 import { http } from '@/utils/http'
 
 export const cateService = {
-  pages: (params?: PageParams): Promise<PageData> => http.get('/cate', { params }),
+  pages: (params?: PageParams): Promise<PageData> => http.get('/category', { params }),
 
-  one: (id: string): Promise<any> => http.get(`/cate/${id}`),
+  one: (id: string): Promise<any> => http.get(`/category/${id}`),
 
-  add: (data: any) => http.post('/cate', data),
+  add: (data: any) => http.post('/category', data),
 
-  update: ({ id, ...data }: any) => http.put(`/cate/${id}`, data),
+  update: ({ id, ...data }: any) => http.put(`/category/${id}`, data),
 
-  remove: (id: string) => http.delete(`/cate/${id}`),
+  remove: (id: string) => http.delete(`/category/${id}`),
 }

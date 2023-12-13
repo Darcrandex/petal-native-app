@@ -28,7 +28,7 @@ export class MediaController {
   @PublicRoute()
   @Get('access-path')
   getAccessPaths(@Query('imageUrl') imageUrl: string) {
-    console.log('imageUrl', imageUrl)
+    // console.log('imageUrl', imageUrl)
 
     const interfaces = networkInterfaces()
     const firstIp = Object.values(interfaces)

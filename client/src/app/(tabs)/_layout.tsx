@@ -7,7 +7,7 @@
 import NavButton from '@/components/NavButton'
 import { userService } from '@/services/user'
 import { useLoginModal } from '@/stores/login-modal'
-import { CalendarDaysIcon, HStack, Icon, Pressable, Text, VStack } from '@gluestack-ui/themed'
+import { AddIcon, BellIcon, HStack, Icon, MoonIcon, Pressable, VStack } from '@gluestack-ui/themed'
 import { Slot, useRouter } from 'expo-router'
 import { useCallback } from 'react'
 import { useWindowDimensions } from 'react-native'
@@ -38,16 +38,26 @@ export default function TabsLayout() {
 
   return (
     <>
-      <VStack pb={safeAreaInsets.bottom} bg='$red400' h={height}>
+      <VStack pb={safeAreaInsets.bottom} h={height}>
         <Slot />
 
-        <HStack justifyContent='space-around' alignItems='center' bg='$pink400'>
-          <NavButton label='关注' icon={<Icon as={CalendarDaysIcon} size='md' />} to='/' />
+        <HStack justifyContent='space-around' alignItems='center'>
+          <NavButton label='关注' icon={BellIcon} to='/' />
 
-          <Pressable onPress={beforeOpen}>
-            <Text>++</Text>
+          <Pressable
+            display='flex'
+            alignItems='center'
+            justifyContent='center'
+            borderRadius='$full'
+            w='$8'
+            h='$8'
+            bg='$rose500'
+            onPress={beforeOpen}
+          >
+            <Icon as={AddIcon} size='md' color='$white' />
           </Pressable>
-          <NavButton label='我的' icon={<Icon as={CalendarDaysIcon} size='md' />} to='/mine' />
+
+          <NavButton label='我的' icon={MoonIcon} to='/mine' />
         </HStack>
       </VStack>
     </>

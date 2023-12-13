@@ -8,5 +8,7 @@ export const userService = {
 
   logout() {},
 
-  profile: (): Promise<UserModel> => http.get('/auth/profile'),
+  profile: (): Promise<UserModel> => http.get('/user/profile'),
+
+  update: (data: Partial<UserModel>): Promise<any> => http.put('/user/update', data),
 }
