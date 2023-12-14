@@ -4,5 +4,6 @@ module.exports = {
 
   rules: {
     'import/order': 'off',
+    'prettier/prettier': 'off',
   },
 }

@@ -9,12 +9,14 @@ import {
   Query,
 } from '@nestjs/common'
 import { Prisma } from '@prisma/client'
+import { PublicRoute } from 'src/auth/auth.guard'
 import { DbService } from 'src/db/db.service'
 
 @Controller('category')
 export class CateController {
   constructor(private readonly db: DbService) {}
 
+  @PublicRoute()
   @Get()
   async findAll(@Query() query: { page?: number; pageSize?: number }) {
     const page = Math.max(1, query.page || 1)
@@ -45,6 +47,7 @@ export class CateController {
     })
   }
 
+  @PublicRoute()
   @Get(':id')
   async findById(@Param('id') id: string) {
     return await this.db.category.findUnique({

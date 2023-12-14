@@ -20,7 +20,7 @@ import {
   Text,
 } from '@gluestack-ui/themed'
 import { useControllableValue } from 'ahooks'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 export type NavBarProps = {
   value?: string
@@ -32,6 +32,10 @@ export type NavBarProps = {
 export default function NavBar(props: NavBarProps) {
   const [value, onChange] = useControllableValue(props)
   const [open, setOpen] = useState(false)
+
+  useEffect(() => {
+    console.log('items', props.items)
+  }, [props.items])
 
   return (
     <>
