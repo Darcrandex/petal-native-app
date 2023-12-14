@@ -52,11 +52,13 @@ export default function Follow() {
     queryKey: ['post', 'page', query],
     queryFn: (p) => {
       const { pageParam } = p
-      return postService.pages({ ...query, page: pageParam })
+
+      return postService.pages({ ...query, current: pageParam })
     },
-    initialPageParam: 0,
+    initialPageParam: 1,
     getNextPageParam: (lastPage) => {
       const { total, pageSize, current } = lastPage
+
       const maxPage = Math.ceil(total / pageSize)
       const hasNextPage = current < maxPage
       return hasNextPage ? current + 1 : undefined

@@ -30,7 +30,6 @@ export default function TabsLayout() {
           router.push('/post/create')
         }
       } catch (e) {
-        console.log(e)
         onOpen()
       }
     }
