@@ -11,31 +11,24 @@ import { useWindowDimensions } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import NavButton from '@/components/NavButton'
-import { userService } from '@/services/user'
+import { useAuthCheck } from '@/hooks/useAuthCheck'
 import { useLoginModal } from '@/stores/login-modal'
 
 export default function TabsLayout() {
   const safeAreaInsets = useSafeAreaInsets()
+  const { validAuth } = useAuthCheck()
 
   const { onOpen } = useLoginModal()
   const router = useRouter()
   const { height } = useWindowDimensions()
 
   const beforeOpen = useCallback(() => {
-    const fn = async () => {
-      try {
-        const res = await userService.profile()
-
-        if (res) {
-          router.push('/post/create')
-        }
-      } catch (e) {
-        onOpen()
-      }
+    if (validAuth) {
+      router.push('/post/create')
+    } else {
+      onOpen()
     }
-
-    fn()
-  }, [onOpen, router])
+  }, [validAuth, onOpen, router])
 
   return (
     <>

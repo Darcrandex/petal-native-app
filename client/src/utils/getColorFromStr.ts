@@ -6,7 +6,7 @@ import { hsl } from 'color'
  * @param s 饱和度
  * @param l 亮度
  */
-export function getColorFromStr(str = '', s = 85, l = 50) {
+export function getColorFromStr(str = '', s = 65, l = 50) {
   const h = str.split('').reduce((prev, curr) => prev + curr.charCodeAt(0), 0)
   return hsl(h, s, l).rgb().toString()
 }

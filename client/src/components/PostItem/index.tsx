@@ -4,10 +4,10 @@
  * @author darcrand
  */
 
-import { Avatar, AvatarFallbackText, AvatarImage, HStack, Image, Text, VStack, View } from '@gluestack-ui/themed'
+import { Avatar, AvatarFallbackText, AvatarImage, HStack, Text, VStack, View } from '@gluestack-ui/themed'
 import { useQuery } from '@tanstack/react-query'
-import { useMemo } from 'react'
-import { Dimensions } from 'react-native'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { Animated, Dimensions } from 'react-native'
 
 import { mediaService } from '@/services/common'
 import { PostModel } from '@/types/post.model'
@@ -20,8 +20,8 @@ export type PostItemProps = { data: PostModel }
 export default function PostItem(props: PostItemProps) {
   const viewSize = useMemo(() => {
     const winSize = Dimensions.get('window')
-    const width = Math.floor((winSize.width - 6 * PADDING) * 0.5)
-    const height = Math.floor((props.data.imageHeight / props.data.imageWidth) * width)
+    const width = Math.ceil((winSize.width - 6 * PADDING) * 0.5)
+    const height = Math.ceil((props.data.imageHeight / props.data.imageWidth) * width)
     return { width, height }
   }, [props.data])
 
@@ -48,17 +48,36 @@ export default function PostItem(props: PostItemProps) {
     return props.data.favorites?.find((f) => f.userId === props.data.userId)
   }, [props.data])
 
+  // 图片动画
+  const [imageLoaded, setImageLoaded] = useState(false)
+  const fadeAnim = useRef(new Animated.Value(0)).current
+  useEffect(() => {
+    if (imageLoaded) {
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 500,
+        useNativeDriver: true,
+      }).start()
+    }
+  }, [fadeAnim, imageLoaded])
+
   return (
     <>
       <View margin={PADDING}>
-        <Image
-          width={viewSize.width}
-          height={viewSize.height}
-          source={{ uri: imageUri }}
-          alt=''
-          role='img'
-          style={{ borderTopLeftRadius: PADDING, borderTopRightRadius: PADDING, backgroundColor: bgColor }}
-        />
+        <View bgColor={bgColor} style={{ borderTopLeftRadius: PADDING, borderTopRightRadius: PADDING }}>
+          <Animated.Image
+            width={viewSize.width}
+            height={viewSize.height}
+            source={{ uri: imageUri }}
+            style={{
+              width: '100%',
+              borderTopLeftRadius: PADDING,
+              borderTopRightRadius: PADDING,
+              opacity: fadeAnim,
+            }}
+            onLoadEnd={() => setImageLoaded(true)}
+          />
+        </View>
 
         <VStack
           space='md'
