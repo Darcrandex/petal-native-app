@@ -20,14 +20,14 @@ export default function NavButton(props: NavButtonProps) {
 
   return (
     <Pressable onPress={() => (props.replace ? router.replace(props.to) : router.push(props.to))}>
-      <VStack p='$2' alignItems='center' space='xs'>
+      <VStack p='$2' alignItems='center'>
         <FontAwesomeIcon
-          size={24}
+          size={20}
           icon={isActive ? props.activeIcon : props.icon}
           color={isActive ? $secondary950 : $secondary300}
         />
 
-        <Text fontSize='$xs' lineHeight='$xs' color={isActive ? '$secondary950' : '$secondary300'}>
+        <Text fontSize='$2xs' lineHeight='$xs' color={isActive ? '$secondary950' : '$secondary300'}>
           {props.label}
         </Text>
       </VStack>

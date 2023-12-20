@@ -10,29 +10,20 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 
 import { HStack, Pressable, VStack, useToken } from '@gluestack-ui/themed'
 import { Slot, useRouter } from 'expo-router'
-import { useCallback } from 'react'
 import { useWindowDimensions } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
+import { useAuthInterceptorFn } from '@/components/LoginModal'
 import NavButton from '@/components/NavButton'
-import { useAuthCheck } from '@/hooks/useAuthCheck'
-import { useLoginModal } from '@/stores/login-modal'
 
 export default function TabsLayout() {
   const safeAreaInsets = useSafeAreaInsets()
-  const { validAuth } = useAuthCheck()
-
-  const { onOpen } = useLoginModal()
   const router = useRouter()
   const { height } = useWindowDimensions()
 
-  const beforeOpen = useCallback(() => {
-    if (validAuth) {
-      router.push('/post/create')
-    } else {
-      onOpen()
-    }
-  }, [validAuth, onOpen, router])
+  const gotoCreate = useAuthInterceptorFn(() => {
+    router.push('/post/create')
+  })
 
   const $rose500 = useToken('colors', 'rose500')
 
@@ -44,7 +35,7 @@ export default function TabsLayout() {
         <HStack justifyContent='space-around' alignItems='center'>
           <NavButton label='关注' icon={faCompass} activeIcon={faCompassRegular} to='/' />
 
-          <Pressable onPress={beforeOpen}>
+          <Pressable onPress={gotoCreate}>
             <FontAwesomeIcon icon={faPlusCircle} color={$rose500} size={32} />
           </Pressable>
 

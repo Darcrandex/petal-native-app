@@ -10,7 +10,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 
 import { userService } from '@/services/user'
-import { useLoginModal } from '@/stores/login-modal'
+import { useLoginModal } from './useLoginModal'
 
 export type LoginFormProps = { setTabKey: (key: string) => void }
 
