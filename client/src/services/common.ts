@@ -19,7 +19,4 @@ export const mediaService = {
 
     return imageUri
   },
-
-  // 通过图片的url获取图片的实时访问路径
-  getAccessPath: (imageUrl: string): Promise<string> => http.get('/media/access-path', { params: { imageUrl } }),
 }

@@ -8,15 +8,19 @@ import {
 } from '@nestjs/common'
 import { ReqWithUser } from 'src/auth/auth.guard'
 import { DbService } from 'src/db/db.service'
+import { MediaService } from 'src/media/media.service'
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly db: DbService) {}
+  constructor(
+    private readonly db: DbService,
+    private readonly mediaService: MediaService,
+  ) {}
 
   @Get('profile')
   async profile(@Request() req: ReqWithUser) {
     if (req.user.id) {
-      return this.db.user.findFirst({
+      const user = await this.db.user.findFirst({
         where: { id: req.user.id },
         select: {
           password: false,
@@ -26,6 +30,11 @@ export class UserController {
           avatar: true,
         },
       })
+
+      return {
+        ...user,
+        avatar: this.mediaService.getAccessPath(user?.avatar || ''),
+      }
     } else {
       throw new BadRequestException('请先登录')
     }

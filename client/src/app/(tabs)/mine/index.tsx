@@ -4,6 +4,7 @@
  * @author darcrand
  */
 
+import { useUserInfo } from '@/loaders/useUserInfo'
 import {
   Avatar,
   AvatarFallbackText,
@@ -17,27 +18,13 @@ import {
   Text,
   VStack,
 } from '@gluestack-ui/themed'
-import { useQuery } from '@tanstack/react-query'
 import { useRouter } from 'expo-router'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-
-import { mediaService } from '@/services/common'
-import { userService } from '@/services/user'
 
 export default function Mine() {
   const router = useRouter()
   const safeAreaInsets = useSafeAreaInsets()
-  const { data: userInfo } = useQuery({
-    queryKey: ['user', 'profile'],
-    queryFn: async () => userService.profile(),
-    retry: false,
-  })
-
-  const { data: avatarUrl } = useQuery({
-    queryKey: ['user', 'avatar', 'url'],
-    enabled: !!userInfo?.avatar,
-    queryFn: () => mediaService.getAccessPath(userInfo?.avatar || ''),
-  })
+  const { data: userInfo } = useUserInfo()
 
   return (
     <>
@@ -53,7 +40,7 @@ export default function Mine() {
         <HStack space='md' p='$4'>
           <Avatar>
             <AvatarFallbackText>{userInfo?.nickname}</AvatarFallbackText>
-            <AvatarImage source={{ uri: avatarUrl || 'https://i.pravatar.cc/300' }} />
+            <AvatarImage source={{ uri: userInfo?.avatar || 'https://i.pravatar.cc/300' }} />
           </Avatar>
 
           <Box>

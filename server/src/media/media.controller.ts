@@ -9,12 +9,15 @@ import {
 } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { FileInterceptor } from '@nestjs/platform-express'
-import { networkInterfaces } from 'node:os'
 import { PublicRoute } from 'src/auth/auth.guard'
+import { MediaService } from './media.service'
 
 @Controller('media')
 export class MediaController {
-  constructor(private readonly configService: ConfigService) {}
+  constructor(
+    private readonly configService: ConfigService,
+    private readonly mediaService: MediaService,
+  ) {}
 
   // 此处会被 MulterModule 拦截
   // 并完成文件保存
@@ -24,24 +27,9 @@ export class MediaController {
     return file.path
   }
 
-  // 可能后续的业务逻辑需要将图片的地址进行转发
   @PublicRoute()
   @Get('access-path')
-  getAccessPaths(@Query('imageUrl') imageUrl: string) {
-    // console.log('imageUrl', imageUrl)
-
-    const interfaces = networkInterfaces()
-    const firstIp = Object.values(interfaces)
-      .flatMap((value) =>
-        value.filter(
-          (item) => item.family === 'IPv4' && item.address !== '127.0.0.1',
-        ),
-      )
-      .map((item) => item.address)[0]
-
-    const port = this.configService.get('NEST_SERVER_PROT') || 3000
-
-    // return `http://${firstIp}:${port}/public/uploads/2023-12-07/123.jpg`
-    return `http://${firstIp}:${port}/${imageUrl}`
+  getAccessPath(@Query('imageUrl') imageUrl: string) {
+    return this.mediaService.getAccessPath(imageUrl)
   }
 }

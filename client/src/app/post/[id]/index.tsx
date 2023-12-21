@@ -1,13 +1,13 @@
 /**
  * @name PostDetail
- * @description
+ * @description 采集详情
  * @author darcrand
  */
 
 import { faHeart as faHeartRegular, faPenToSquare } from '@fortawesome/free-regular-svg-icons'
 import { faAngleLeft } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
-import { Button, ButtonText, HStack, Image, Pressable, ScrollView, VStack } from '@gluestack-ui/themed'
+import { Button, ButtonText, HStack, Pressable, ScrollView, Text, VStack, View } from '@gluestack-ui/themed'
 import { useQuery } from '@tanstack/react-query'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { Dimensions, Modal } from 'react-native'
@@ -15,9 +15,10 @@ import ImageViewer from 'react-native-image-zoom-viewer'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { useAuthInterceptorFn } from '@/components/LoginModal'
-import { mediaService } from '@/services/common'
+import { useUserInfo } from '@/loaders/useUserInfo'
 import { postService } from '@/services/post'
-import { useUserState } from '@/stores/user'
+import FadeImage from '@/ui/FadeImage'
+import { getColorFromStr } from '@/utils/getColorFromStr'
 import { useState } from 'react'
 
 export default function PostDetail() {
@@ -25,24 +26,17 @@ export default function PostDetail() {
   const safeAreaInsets = useSafeAreaInsets()
   const winSize = Dimensions.get('window')
   const router = useRouter()
-
-  const { user } = useUserState()
+  const { data: userInfo } = useUserInfo()
 
   const { data } = useQuery({
     queryKey: ['post', id],
     queryFn: async () => postService.getById(id),
   })
 
-  const { data: imageSource } = useQuery({
-    queryKey: ['post', 'item', 'image', data?.imageUrl],
-    enabled: !!data?.imageUrl,
-    placeholderData: 'https://placehold.co/300',
-    initialData: 'https://placehold.co/300',
-    queryFn: () => mediaService.getAccessPath(data?.imageUrl || ''),
-  })
+  const bgColor = getColorFromStr(id)
 
   const [visible, setVisible] = useState(false)
-  const editable = user?.id === data?.userId
+  const isCreator = userInfo?.id === data?.userId
 
   const onLike = useAuthInterceptorFn(() => {
     console.log('like')
@@ -56,7 +50,7 @@ export default function PostDetail() {
             <FontAwesomeIcon icon={faAngleLeft} size={20} />
           </Pressable>
 
-          {editable ? (
+          {isCreator ? (
             <Pressable p='$2'>
               <FontAwesomeIcon icon={faPenToSquare} size={20} />
             </Pressable>
@@ -73,20 +67,27 @@ export default function PostDetail() {
 
         <ScrollView flex={1} showsVerticalScrollIndicator={false} pb={safeAreaInsets.bottom}>
           <Pressable onPress={() => setVisible(true)}>
-            <Image
-              width={winSize.width}
-              height={data?.imageWidth ? winSize.width * (data?.imageHeight / data?.imageWidth) : 0}
-              source={imageSource}
-              alt=''
-              role='img'
-              bgColor='$purple500'
-            />
+            <View bgColor={bgColor}>
+              <FadeImage
+                width={winSize.width}
+                height={data?.imageWidth ? winSize.width * (data?.imageHeight / data?.imageWidth) : 0}
+                source={data?.imageUrl}
+              />
+            </View>
           </Pressable>
+
+          {/* 创建者 */}
+          <Text>{data?.userId}</Text>
+
+          {/* 创建者对当前帖子的（第一个）收藏夹 */}
+          {/* 帖子可以被它的创建者收藏，且允许被收藏到不同的收藏夹中 */}
+          {/* 只获取第一个收藏夹 */}
+          <Text>收藏于 【收藏夹名称】</Text>
         </ScrollView>
       </VStack>
 
       <Modal visible={visible} transparent onRequestClose={() => setVisible(false)}>
-        <ImageViewer imageUrls={[{ url: imageSource }]} onClick={() => setVisible(false)} />
+        <ImageViewer imageUrls={[{ url: data?.imageUrl || '' }]} onClick={() => setVisible(false)} />
       </Modal>
     </>
   )

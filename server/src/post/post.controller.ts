@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   Body,
   Controller,
@@ -12,10 +13,14 @@ import {
 import { Prisma } from '@prisma/client'
 import { PublicRoute, ReqWithUser } from 'src/auth/auth.guard'
 import { DbService } from 'src/db/db.service'
+import { MediaService } from 'src/media/media.service'
 
 @Controller('post')
 export class PostController {
-  constructor(private readonly db: DbService) {}
+  constructor(
+    private readonly db: DbService,
+    private readonly mediaService: MediaService,
+  ) {}
 
   @Post()
   async create(
@@ -43,28 +48,43 @@ export class PostController {
   @PublicRoute()
   @Get(':id')
   async findOne(@Param() parmas: { id: string }) {
-    return await this.db.post.findUnique({
-      where: {
-        id: parmas.id,
+    const item = await this.db.post.findUnique({
+      where: { id: parmas.id },
+      include: {
+        user: {
+          select: { id: true, username: true, nickname: true, avatar: true },
+        },
       },
     })
+
+    return {
+      ...item,
+      imageUrl: this.mediaService.getAccessPath(item?.imageUrl || ''),
+      user: {
+        ...item.user,
+        avatar: this.mediaService.getAccessPath(item?.user?.avatar || ''),
+      },
+    }
   }
 
   @Put(':id')
   async update(@Param('id') id: string, @Body() data: Prisma.PostUpdateInput) {
-    return await this.db.post.update({
+    const item = await this.db.post.update({
       where: { id },
       data,
     })
+
+    return item.id
   }
 
   @Delete(':id')
   async remove(@Param() parmas: { id: string }) {
-    return await this.db.post.delete({
+    const item = await this.db.post.delete({
       where: {
         id: parmas.id,
       },
     })
+    return item.id
   }
 
   @PublicRoute()
@@ -85,7 +105,16 @@ export class PostController {
       },
     })
 
+    const listWithImageUrl = list.map((v) => ({
+      ...v,
+      imageUrl: this.mediaService.getAccessPath(v?.imageUrl || ''),
+      user: {
+        ...v.user,
+        avatar: this.mediaService.getAccessPath(v?.user?.avatar || ''),
+      },
+    }))
+
     const total = await this.db.post.count()
-    return { list, total, current, pageSize }
+    return { list: listWithImageUrl, total, current, pageSize }
   }
 }

@@ -5,6 +5,7 @@ import * as dayjs from 'dayjs'
 import { diskStorage } from 'multer'
 import { uid } from 'src/utils/uid'
 import { MediaController } from './media.controller'
+import { MediaService } from './media.service'
 
 @Module({
   imports: [
@@ -30,6 +31,6 @@ import { MediaController } from './media.controller'
 
   controllers: [MediaController],
 
-  providers: [ConfigService],
+  providers: [ConfigService, MediaService],
 })
 export class MediaModule {}

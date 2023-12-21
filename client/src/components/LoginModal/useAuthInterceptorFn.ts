@@ -3,10 +3,11 @@ import { useQuery } from '@tanstack/react-query'
 import { useCallback } from 'react'
 import { useLoginModal } from './useLoginModal'
 
-// 在触发需要用户验证的事件时调用
-// 判断当前用户是否已经登录
-// 如果未登录则弹出登录对话框
-export function useAuthInterceptorFn(callback: (...args: any[]) => any) {
+/**
+ * @description 用于拦截需要用户验证的触发函数
+ * @param callback 业务上真正需要触发的函数
+ */
+export function useAuthInterceptorFn(callback: (...args: any[]) => void) {
   const { onOpen } = useLoginModal()
 
   const { isError } = useQuery({
