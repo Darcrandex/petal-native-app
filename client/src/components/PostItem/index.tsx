@@ -42,7 +42,6 @@ export default function PostItem(props: PostItemProps) {
             height={viewSize.height}
             source={props.data.imageUrl}
             style={{
-              width: '100%',
               borderTopLeftRadius: PADDING,
               borderTopRightRadius: PADDING,
             }}

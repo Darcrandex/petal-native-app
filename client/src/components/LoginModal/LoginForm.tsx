@@ -4,12 +4,11 @@
  * @author darcrand
  */
 
+import { userService } from '@/services/user'
 import { Button, ButtonText, HStack, Input, InputField, Pressable, Text, VStack } from '@gluestack-ui/themed'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
-
-import { userService } from '@/services/user'
 import { useLoginModal } from './useLoginModal'
 
 export type LoginFormProps = { setTabKey: (key: string) => void }

@@ -1,12 +1,12 @@
 import { atom, useAtom } from 'jotai'
 import { useCallback } from 'react'
 
-type loginState = { isOpen: boolean }
+type loginModalState = { isOpen: boolean }
 
-const loginAtom = atom<loginState>({ isOpen: false })
+const loginModalAtom = atom<loginModalState>({ isOpen: false })
 
 export function useLoginModal() {
-  const [state, setState] = useAtom(loginAtom)
+  const [state, setState] = useAtom(loginModalAtom)
   const { isOpen } = state
 
   const onOpen = useCallback(() => setState({ isOpen: true }), [setState])
